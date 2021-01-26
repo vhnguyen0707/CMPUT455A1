@@ -15,6 +15,15 @@ BLACK = 1
 WHITE = 2
 BORDER = 3
 
+#=======================================================
+# Assigment 1: encoding the status of the board - Susan
+#=======================================================
+UNKNOWN = -1
+DRAW = 0
+BLACK_WIN = 1
+WHITE_WIN = 2
+
+
 
 def is_black_white(color):
     return color == BLACK or color == WHITE
@@ -184,3 +193,71 @@ class GoBoardUtil(object):
             start = goboard.row_start(row + 1)
             board2d[row, :] = goboard.board[start : start + size]
         return board2d
+
+#============================================
+# Assigment 1: find winner method - Susan
+#============================================
+    @staticmethod
+    def find_winner(goboard):
+        size = goboard.size
+        board2D = GoBoardUtil.get_twoD_board(goboard)
+        win_in_row = 5
+        winner = UNKNOWN
+
+        for r in range(size):
+            for c in range(size):
+                #print(board2D[r,c], end = " ")
+
+                if board2D[r,c] != EMPTY:
+                    consider_winner = board2D[r,c]
+
+                    # Vertical Check
+                    found_winner = True
+                    if winner == UNKNOWN and (r + win_in_row - 1) < size:
+                        found_winner = True
+                        for i in range(1, win_in_row):
+                            if board2D[r+i,c] != consider_winner:
+                                found_winner = False
+                                break
+                        if found_winner:
+                            winner = consider_winner
+                            print("win vertically")
+                            break
+                
+                    # Horizontal Check:
+                    if winner == UNKNOWN and (c + win_in_row - 1) < size:
+                        found_winner = True
+                        for i in range(1, win_in_row):
+                            if board2D[r,c+i] != consider_winner:
+                                found_winner = False
+                                break
+                        if found_winner:
+                            winner = consider_winner
+                            print("win horizontally")
+                            break
+                    
+                    # Diagonal 1 Check:
+                    if winner == UNKNOWN and (r + win_in_row - 1) < size and (c + win_in_row - 1) < size:
+                        found_winner = True
+                        for i in range(1, win_in_row):
+                            if board2D[r+i,c+i] != consider_winner:
+                                found_winner = False
+                                break
+                        if found_winner:
+                            winner = consider_winner
+                            print("win diagonally 1")
+                            break
+
+                    # Diagonal 2 Check:
+                    if winner == UNKNOWN and (r + win_in_row - 1) < size and (c - win_in_row + 1) >= 0:
+                        found_winner = True
+                        for i in range(1, win_in_row):
+                            if board2D[r+i,c-i] != consider_winner:
+                                found_winner = False
+                                break
+                        if found_winner:
+                            winner = consider_winner
+                            print("win diagonally 2")
+                            break
+        return winner
+
