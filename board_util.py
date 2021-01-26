@@ -259,5 +259,8 @@ class GoBoardUtil(object):
                             winner = consider_winner
                             print("win diagonally 2")
                             break
+
+        if winner == UNKNOWN and len(goboard.get_empty_points()) < 1:
+            winner = DRAW
         return winner
 

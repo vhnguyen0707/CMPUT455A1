@@ -17,7 +17,6 @@ from board_util import (
     PASS,
     MAXSIZE,
     coord_to_point,
-    UNKNOWN,
     DRAW,
     BLACK_WIN,
     WHITE_WIN
@@ -247,14 +246,12 @@ class GtpConnection:
 
         winner = GoBoardUtil.find_winner(self.board)
 
-        if (winner != UNKNOWN):
-            if winner == BLACK:
-                result_str = "black"
-            else:
-                result_str = "white"
-        else:
-            if len(self.board.get_empty_points()) < 1:
-                result_str = "draw"
+        if winner == BLACK_WIN:
+            result_str = "black"
+        elif winner == WHITE_WIN:
+            result_str = "white"
+        elif winner == DRAW:
+            result_str = "draw"
 
         self.respond(result_str)
 
@@ -301,6 +298,8 @@ class GtpConnection:
         move_as_string = format_point(move_coord)
 
         opp_color = GoBoardUtil.opp_color(color)
+        winner = GoBoardUtil.find_winner(self.board)
+        
         if self.board.is_legal(move, color):
             self.board.play_move(move, color)
             self.respond(move_as_string)
