@@ -17,6 +17,7 @@ from board_util import (
     PASS,
     MAXSIZE,
     coord_to_point,
+    UNKNOWN,
     DRAW,
     BLACK_WIN,
     WHITE_WIN
@@ -297,14 +298,22 @@ class GtpConnection:
         move_coord = point_to_coord(move, self.board.size)
         move_as_string = format_point(move_coord)
 
-        opp_color = GoBoardUtil.opp_color(color)
+        opp_color = GoBoardUtil.opponent(color)
         winner = GoBoardUtil.find_winner(self.board)
         
-        if self.board.is_legal(move, color):
-            self.board.play_move(move, color)
-            self.respond(move_as_string)
-        else:
-            self.respond("Illegal move: {}".format(move_as_string))
+        if winner == UNKNOWN:
+            if self.board.is_legal(move, color):
+                self.board.play_move(move, color)
+                self.respond(move_as_string)
+            else:
+                self.respond("Illegal move: {}".format(move_as_string))
+
+        elif winner == opp_color:
+            self.respond("resign")
+        elif winner == DRAW:
+            self.respond("pass")
+        else: #case winner == color
+            self.respond("have not clarify. waiting for TA to answer...")
 
     """
     ==========================================================================
