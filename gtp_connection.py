@@ -239,7 +239,82 @@ class GtpConnection:
             
     def gogui_rules_final_result_cmd(self, args):
         """ Implement this function for Assignment 1 """
-        self.respond("unknown")
+        size = self.board.size
+        board2D = GoBoardUtil.get_twoD_board(self.board)
+        win_in_row = 5
+        winner = -1
+        result_str = "unknow"
+
+        for r in range(size):
+            for c in range(size):
+                #print(board2D[r,c], end = " ")
+
+                if board2D[r,c] != EMPTY:
+                    consider_winner = board2D[r,c]
+
+                    # Vertical Check
+                    found_winner = True
+                    if winner == -1 and (r + win_in_row - 1) < size:
+                        found_winner = True
+                        for i in range(1, win_in_row):
+                            if board2D[r+i,c] != consider_winner:
+                                found_winner = False
+                                break
+                        if found_winner:
+                            winner = consider_winner
+                            print("win vertically")
+                            break
+                
+                    # Horizontal Check:
+                    if winner == -1 and (c + win_in_row - 1) < size:
+                        found_winner = True
+                        for i in range(1, win_in_row):
+                            if board2D[r,c+i] != consider_winner:
+                                found_winner = False
+                                break
+                        if found_winner:
+                            winner = consider_winner
+                            print("win horizontally")
+                            break
+                    
+                    # Diagonal 1 Check:
+                    if winner == -1 and (r + win_in_row - 1) < size and (c + win_in_row - 1) < size:
+                        found_winner = True
+                        for i in range(1, win_in_row):
+                            if board2D[r+i,c+i] != consider_winner:
+                                found_winner = False
+                                break
+                        if found_winner:
+                            winner = consider_winner
+                            print("win diagonally 1")
+                            break
+
+                    # Diagonal 2 Check:
+                    if winner == -1 and (r + win_in_row - 1) < size and (c - win_in_row + 1) >= 0:
+                        found_winner = True
+                        for i in range(1, win_in_row):
+                            if board2D[r+i,c-i] != consider_winner:
+                                found_winner = False
+                                break
+                        if found_winner:
+                            winner = consider_winner
+                            print("win diagonally 2")
+                            break
+                    
+            #print("\n")
+
+        if (winner != -1):
+            if winner == BLACK:
+                result_str = "black"
+            else:
+                result_str = "white"
+        else:
+            if len(self.board.get_empty_points()) < 1:
+                result_str = "draw"
+                winner = 3 #Draw
+
+        self.respond(result_str)
+        return winner
 
     def play_cmd(self, args):
         """ Modify this function for Assignment 1 """
