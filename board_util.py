@@ -18,10 +18,11 @@ BORDER = 3
 #=======================================================
 # Assigment 1: encoding the status of the board - Susan
 #=======================================================
-UNKNOWN = -1
-DRAW = 0
-BLACK_WIN = 1
-WHITE_WIN = 2
+    '''UNKNOWN = -1
+    DRAW = 0
+    BLACK_WIN = 1
+    WHITE_WIN = 2
+    '''
 
 
 
@@ -197,7 +198,8 @@ class GoBoardUtil(object):
 #============================================
 # Assigment 1: find winner method - Susan
 #============================================
-    @staticmethod
+ 
+ '''   @staticmethod
     def find_winner(goboard):
         size = goboard.size
         board2D = GoBoardUtil.get_twoD_board(goboard)
@@ -263,4 +265,5 @@ class GoBoardUtil(object):
         if winner == UNKNOWN and len(goboard.get_empty_points()) < 1:
             winner = DRAW
         return winner
+        '''
 

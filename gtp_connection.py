@@ -245,7 +245,8 @@ class GtpConnection:
         """ Implement this function for Assignment 1 """
         result_str = "unknow"
 
-        winner = GoBoardUtil.find_winner(self.board)
+        #winner = GoBoardUtil.find_winner(self.board)
+        winner = self.board.find_winner()
 
         if winner == BLACK_WIN:
             result_str = "black"
@@ -299,7 +300,8 @@ class GtpConnection:
         move_as_string = format_point(move_coord)
 
         opp_color = GoBoardUtil.opponent(color)
-        winner = GoBoardUtil.find_winner(self.board)
+        #winner = GoBoardUtil.find_winner(self.board)
+        winner = self.board.find_winner()
         
         if winner == UNKNOWN:
             if self.board.is_legal(move, color):

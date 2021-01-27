@@ -20,10 +20,21 @@ from board_util import (
     is_black_white,
     is_black_white_empty,
     coord_to_point,
+    get_twoD_board,
     where1d,
     MAXSIZE,
     GO_POINT
 )
+
+
+#=======================================================
+# Assigment 1: encoding the status of the board - Susan
+#=======================================================
+UNKNOWN = -1
+DRAW = 0
+BLACK_WIN = 1
+WHITE_WIN = 2
+
 
 """
 The GoBoard class implements a board and basic functions to play
@@ -210,24 +221,7 @@ class GoBoard(object):
         if point == self.ko_recapture:
             return False
 
-        # General case: deal with captures, suicide, and next ko point
-        opp_color = GoBoardUtil.opponent(color)
-        in_enemy_eye = self._is_surrounded(point, opp_color)
         self.board[point] = color
-        single_captures = []
-        neighbors = self._neighbors(point)
-        for nb in neighbors:
-            if self.board[nb] == opp_color:
-                single_capture = self._detect_and_process_capture(nb)
-                if single_capture != None:
-                    single_captures.append(single_capture)
-        block = self._block_of(point)
-        if not self._has_liberty(block):  # undo suicide move
-            self.board[point] = EMPTY
-            return False
-        self.ko_recapture = None
-        if in_enemy_eye and len(single_captures) == 1:
-            self.ko_recapture = single_captures[0]
         self.current_player = GoBoardUtil.opponent(color)
         self.last2_move = self.last_move
         self.last_move = point
@@ -265,3 +259,32 @@ class GoBoard(object):
         if self.last2_move != None and self.last2_move != PASS:
             board_moves.append(self.last2_move)
             return 
+
+    def count_colors(self, point, dir):
+    	count = 0
+    	next_point = point + dir
+    	while next_point != BORDER:
+    		if self.get_color(next_point) != color:
+    			break
+    		count += 1
+    		next_point = next_point + dir
+    	return count 
+    	
+
+    def find_winner(self):
+    	winner = UNKNOWN
+    	color = self.get_color(self.last_move)
+    	possible_dir = [(-1,1), (-self.NS, self.NS), (-self.NS - 1, self.NS + 1), (-self.NS + 1, self.NS -1)]
+    	for dir in possible_dir:
+    		count = 0
+    		count += count_colors(last_move, dir[0])
+    		count += count_colors(last_move, dir[1])
+    		if count >= 5:
+    			winner = color
+    			break
+    	if winner == UNKNOWN and len(self.get_empty_points()) == 0:
+    		winner = DRAW
+
+    	return winner
+
+
