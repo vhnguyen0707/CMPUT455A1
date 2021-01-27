@@ -213,7 +213,13 @@ class GtpConnection:
 
     def gogui_rules_legal_moves_cmd(self, args):
         """ Implement this function for Assignment 1 """
-        self.respond()
+        moves = GoBoardUtil.generate_legal_moves(self.board)
+        gtp_moves = []
+        for move in moves:
+            coords = point_to_coord(move, self.board.size)
+            gtp_moves.append(format_point(coords))
+        sorted_moves = " ".join(sorted(gtp_moves))
+        self.respond(sorted_moves)
         return
 
     def gogui_rules_side_to_move_cmd(self, args):
@@ -264,12 +270,18 @@ class GtpConnection:
         try:
             board_color = args[0].lower()
             board_move = args[1]
+            if board_color.lower() not in ["b","w"]:
+                self.respond("illegal move: \"{}\" ".format(args[0].lower()) + "wrong color")
+                return
             color = color_to_int(board_color)
             if args[1].lower() == "pass":
                 self.board.play_move(PASS, color)
                 self.board.current_player = GoBoardUtil.opponent(color)
                 self.respond()
                 return
+            '''if (self.board.current_player != color):
+                self.respond("illegal move: \"{}\" ".format(args[0]) + "wrong color")
+                return'''
             coord = move_to_coord(args[1], self.board.size)
             if coord:
                 move = coord_to_point(coord[0], coord[1], self.board.size)
@@ -279,7 +291,7 @@ class GtpConnection:
                 )
                 return
             if not self.board.play_move(move, color):
-                self.respond("Illegal Move: {}".format(board_move))
+                self.respond("illegal move: \"{}\" ".format(args[1].lower()) + "occupied")
                 return
             else:
                 self.debug_msg(
@@ -287,7 +299,7 @@ class GtpConnection:
                 )
             self.respond()
         except Exception as e:
-            self.respond("Error: {}".format(str(e)))
+            self.respond("illegal move: \"{}\" ".format(args[1].lower()) + "{}".format(str(e)))
 
     def genmove_cmd(self, args):
         """ Modify this function for Assignment 1 """
@@ -410,9 +422,11 @@ def move_to_coord(point_str, board_size):
         if row < 1:
             raise ValueError
     except (IndexError, ValueError):
-        raise ValueError("invalid point: '{}'".format(s))
+        raise ValueError("wrong coordinate")
+        #raise ValueError("invalid point: '{}'".format(s))
     if not (col <= board_size and row <= board_size):
-        raise ValueError("point off board: '{}'".format(s))
+        raise IndexError("wrong coordinate")
+        #raise ValueError("point off board: '{}'".format(s))
     return row, col
 
 
