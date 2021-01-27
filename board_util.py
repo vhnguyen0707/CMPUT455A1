@@ -117,7 +117,7 @@ def coord_to_point(row, col, boardsize):
 
 class GoBoardUtil(object):
     @staticmethod
-    def generate_legal_moves(board, color):
+    def generate_legal_moves(board):
         """
         generate a list of all legal moves on the board.
         Does not include the Pass move.
@@ -126,15 +126,14 @@ class GoBoardUtil(object):
         ---------
         board : np.array
             a SIZExSIZE array representing the board
-        color : {'b','w'}
-            the color to generate the move for.
         """
-        moves = board.get_empty_points()
-        legal_moves = []
-        for move in moves:
-            if board.is_legal(move, color):
-                legal_moves.append(move)
-        return legal_moves
+    
+        if GoBoardUtil.find_winner(board) == UNKNOWN:
+            moves = board.get_empty_points()
+        else: 
+            print("Game is over.")
+            moves = []
+        return moves
 
     @staticmethod
     def generate_random_move(board, color, use_eye_filter):
