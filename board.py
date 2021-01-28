@@ -28,7 +28,7 @@ from board_util import (
 
 
 #=======================================================
-# Assigment 1: encoding the status of the board - Susan
+# Assigment 1: Nguyen
 #=======================================================
 UNKNOWN = -1
 DRAW = 0
@@ -263,7 +263,7 @@ class GoBoard(object):
     def count_colors(self, point, dir):
     	count = 0
     	next_point = point + dir
-    	while next_point != BORDER:
+    	while self.get_color(next_point) != BORDER:
     		if self.get_color(next_point) != color:
     			break
     		count += 1
