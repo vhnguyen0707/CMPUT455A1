@@ -327,10 +327,8 @@ class GtpConnection:
 
         elif winner == opp_color:
             self.respond("resign")
-        elif winner == DRAW:
+        else: # winner == DRAW or winner == color
             self.respond("pass")
-        else: #case winner == color
-            self.respond("have not clarify. waiting for TA to answer...")
 
     """
     ==========================================================================
