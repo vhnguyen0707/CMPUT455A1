@@ -222,6 +222,7 @@ class GtpConnection:
             for move in moves:
                 coords = point_to_coord(move, self.board.size)
                 gtp_moves.append(format_point(coords))
+
         sorted_moves = " ".join(sorted(gtp_moves))
         self.respond(sorted_moves)
         return
