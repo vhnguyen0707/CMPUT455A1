@@ -1,7 +1,6 @@
 """
 gtp_connection.py
 Module for playing games of Go using GoTextProtocol
-
 Parts of this code were originally based on the gtp module 
 in the Deep-Go project by Isaac Henrion and Amos Storkey 
 at the University of Edinburgh.
@@ -17,6 +16,10 @@ from board_util import (
     PASS,
     MAXSIZE,
     coord_to_point,
+    
+)
+
+from board import (
     UNKNOWN,
     DRAW,
     BLACK_WIN,
@@ -30,7 +33,6 @@ class GtpConnection:
     def __init__(self, go_engine, board, debug_mode=False):
         """
         Manage a GTP connection for a Go-playing engine
-
         Parameters
         ----------
         go_engine:
@@ -213,11 +215,14 @@ class GtpConnection:
 
     def gogui_rules_legal_moves_cmd(self, args):
         """ Implement this function for Assignment 1 """
-        moves = GoBoardUtil.generate_legal_moves(self.board)
+
         gtp_moves = []
-        for move in moves:
-            coords = point_to_coord(move, self.board.size)
-            gtp_moves.append(format_point(coords))
+        if self.board.find_winner() == UNKNOWN:
+            moves = GoBoardUtil.generate_legal_moves(self.board, self.board.current_player)
+            for move in moves:
+                coords = point_to_coord(move, self.board.size)
+                gtp_moves.append(format_point(coords))
+
         sorted_moves = " ".join(sorted(gtp_moves))
         self.respond(sorted_moves)
         return
@@ -251,7 +256,7 @@ class GtpConnection:
         """ Implement this function for Assignment 1 """
         result_str = "unknown"
 
-        winner = GoBoardUtil.find_winner(self.board)
+        winner = self.board.find_winner()
 
         if winner == BLACK_WIN:
             result_str = "black"
@@ -311,7 +316,7 @@ class GtpConnection:
         move_as_string = format_point(move_coord)
 
         opp_color = GoBoardUtil.opponent(color)
-        winner = GoBoardUtil.find_winner(self.board)
+        winner = self.board.find_winner()
         
         if winner == UNKNOWN:
             if self.board.is_legal(move, color):
@@ -391,7 +396,7 @@ def format_point(move):
     Return move coordinates as a string such as 'A1', or 'PASS'.
     """
     assert MAXSIZE <= 25
-    column_letters = "ABCDEFGHJKLMNOPQRSTUVWXYZ"
+    column_letters = "ABCDEFGHJKLMNOPQRSTUVWXYZ".lower()
     if move == PASS:
         return "PASS"
     row, col = move
