@@ -16,12 +16,16 @@ from board_util import (
     BORDER,
     PASS,
     MAXSIZE,
-    coord_to_point,
+    coord_to_point
+)
+
+from board import (
     UNKNOWN,
     DRAW,
-    BLACK_WIN,
+    BLACK_WIN, 
     WHITE_WIN
 )
+
 import numpy as np
 import re
 

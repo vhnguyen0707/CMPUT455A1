@@ -209,15 +209,15 @@ class GoBoard(object):
         Returns boolean: whether move was legal
         """
         assert is_black_white(color)
-        
-        if self.board[point] != EMPTY:
+     
+        elif self.board[point] != EMPTY:
             return False
         if point == self.ko_recapture:
             return False
 
         self.board[point] = color
         self.current_player = GoBoardUtil.opponent(color)
-        #self.last2_move = self.last_move
+        self.last2_move = self.last_move
         self.last_move = point
         return True
 
