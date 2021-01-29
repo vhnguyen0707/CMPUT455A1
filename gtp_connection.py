@@ -249,7 +249,7 @@ class GtpConnection:
             
     def gogui_rules_final_result_cmd(self, args):
         """ Implement this function for Assignment 1 """
-        result_str = "unknow"
+        result_str = "unknown"
 
         winner = GoBoardUtil.find_winner(self.board)
 
