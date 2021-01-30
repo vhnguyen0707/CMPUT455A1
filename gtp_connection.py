@@ -256,8 +256,9 @@ class GtpConnection:
         """ Implement this function for Assignment 1 """
         result_str = "unknown"
 
-        winner = self.board.find_winner()
+        winner = self.board.find_winner() # get the winner of the current board state
 
+        # update the result respond base on winner
         if winner == BLACK_WIN:
             result_str = "black"
         elif winner == WHITE_WIN:
@@ -315,19 +316,20 @@ class GtpConnection:
         move_coord = point_to_coord(move, self.board.size)
         move_as_string = format_point(move_coord)
 
-        opp_color = GoBoardUtil.opponent(color)
-        winner = self.board.find_winner()
+        opp_color = GoBoardUtil.opponent(color) # get the opponent color
+        winner = self.board.find_winner() # get the winner of the current board state
         
-        if winner == UNKNOWN:
+        if winner == UNKNOWN: # before the end of a game, genmove will play a random legal move.
             if self.board.is_legal(move, color):
                 self.board.play_move(move, color)
                 self.respond(move_as_string)
             else:
                 self.respond("Illegal move: {}".format(move_as_string))
 
-        elif winner == opp_color:
+        elif winner == opp_color:  # if the game is over because of the opponent
             self.respond("resign")
-        else: # winner == DRAW or winner == color
+
+        else: # winner == DRAW or color: if the game is over because the board is full and it is a draw or over because of the current player
             self.respond("pass")
 
     """
