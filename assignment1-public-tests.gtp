@@ -69,10 +69,10 @@ play B A2
 play W A1
 
 30 gogui-rules_legal_moves
-#?[b1]
+#?[B1]
 
 40 genmove b
-#?[b1]
+#?[B1]
 
 play B B1
 
