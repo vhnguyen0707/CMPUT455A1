@@ -262,29 +262,30 @@ class GoBoard(object):
 	def count_colors(self, point, dirx):
 		count = 0
 		color = self.get_color(point)
-		next_point = point + dirx
+		next_point = point + dirx  #gets position of neighbor
 		while self.get_color(next_point) != BORDER:
 			if self.get_color(next_point) != color:
-				return count
+				return count 	   #returns count immediately if neighbor is of different color
 			count += 1
 			next_point = next_point + dirx
 		return count
 		
 
 	def find_winner(self):
-		if self.last_move == None:
+		if self.last_move == None:			
 			return UNKNOWN
-		winner = UNKNOWN
-		color = self.get_color(self.last_move)
+		winner = UNKNOWN				#sets winner to unknown and returns unknown winner initially
+		color = self.get_color(self.last_move)		#gets color of last_move to compare with neighbors
+		#possible neighbors are in 8 cardinal directions, groups the directions that make a line with last_move together
 		possible_dir = [(-1,1), (-self.NS, self.NS), (-self.NS - 1, self.NS + 1), (-self.NS + 1, self.NS -1)]
 		for dirx in possible_dir:
 			count = 1
 			count += self.count_colors(self.last_move, dirx[0])
 			count += self.count_colors(self.last_move, dirx[1])
-			if count >= 5:
+			if count >= 5:		#when count of color is 5 or above returns the color as winner
 				winner = color
 				break
-		if winner == UNKNOWN and len(self.get_empty_points()) == 0:
+		if winner == UNKNOWN and len(self.get_empty_points()) == 0:  #returns draw when all points are taken and there is no 5-row of same color
 			winner = DRAW
 
 		return winner
