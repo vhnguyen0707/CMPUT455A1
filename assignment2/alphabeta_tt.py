@@ -35,5 +35,5 @@ def alphabeta(state, alpha, beta, tt):
     return storeResult(tt, state, result)
 
 # initial call with full window
-def call_alphabeta_tt(rootState):
+def call_alphabeta_tt(rootState, tt):
     return alphabeta(rootState, -INFINITY, INFINITY, tt)
