@@ -3,7 +3,7 @@
 INFINITY = 1000000
 
 def storeResult(tt, state, result):
-    tt.store(state.code(), result)
+    tt.store(state.hashcode(), result)
     return result
 
 def alphabeta(state, alpha, beta, tt):
@@ -20,8 +20,8 @@ def alphabeta(state, alpha, beta, tt):
 
     for move in state.get_empty_points():
         state.play_move(move, state.current_player)
-        value = -alphabeta(state, -beta, -alpha)
-        state.undoMove()
+        value = -alphabeta(state, -beta, -alpha, tt)[0]
+        state.undoMove(move)
 
         if value > alpha:
             alpha = value

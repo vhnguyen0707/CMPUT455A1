@@ -378,29 +378,37 @@ class GoBoard(object):
 
 
     #============================A2-Susan============================
+    def nonpadded_1dboard(self):
+        return np.delete(self.board, np.where(self.board == BORDER))
+        
     def zobrist_random(self):
         '''
         For transposition table
         Apply zobrist hash step 1: generate random number for each (point, color) combination
         '''
-
         self.code = np.zeros((self.total_cells, self.total_colors))
         #print(self.code.shape)
 
         for i in np.arange(self.total_cells):
             for j in np.arange(self.total_colors):
+                a =random.getrandbits(64)
                 self.code[i][j] = random.getrandbits(64)
                 #print(self.code[i][j], end=" ") 
             #print("\n")
+        
+        self.code = self.code.astype(int)
 
     def hashcode(self):
         '''
         For transposition table
         '''
-        hashcode = self.code[0][self.board[0]]
+
+        board = self.nonpadded_1dboard()
+        #print(board.shape)
+        hashcode = self.code[0][board[0]]
 
         for i in np.arange(1, self.total_cells):
-            hashcode = hashcode ^ self.code[i][self.board[i]]
+            hashcode = hashcode ^ self.code[i][board[i]]
         
         return hashcode
 
@@ -428,7 +436,7 @@ class GoBoard(object):
         For alphabeta search
         '''
         self.board[point] = EMPTY
-        self.current_player = GoBoardUtil.opp_color(self.current_player)
+        self.current_player = GoBoardUtil.opponent(self.current_player)
     
         
         
