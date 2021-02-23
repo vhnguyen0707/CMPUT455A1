@@ -10,6 +10,7 @@ The board uses a 1-dimensional representation with padding
 """
 
 import numpy as np
+import random
 from board_util import (
     GoBoardUtil,
     BLACK,
@@ -118,6 +119,10 @@ class GoBoard(object):
         self.board = np.full(self.maxpoint, BORDER, dtype=GO_POINT)
         self._initialize_empty_points(self.board)
         self.calculate_rows_cols_diags()
+        #=============A2================
+        self.total_cells = size * size
+        self.total_colors = 3
+        self.zobrist_random()
 
     def copy(self):
         b = GoBoard(self.size)
@@ -370,3 +375,62 @@ class GoBoard(object):
             if counter == 5 and prev != EMPTY:
                 return prev
         return EMPTY
+
+
+    #============================A2-Susan============================
+    def zobrist_random(self):
+        '''
+        For transposition table
+        Apply zobrist hash step 1: generate random number for each (point, color) combination
+        '''
+
+        self.code = np.zeros((self.total_cells, self.total_colors))
+        #print(self.code.shape)
+
+        for i in np.arange(self.total_cells):
+            for j in np.arange(self.total_colors):
+                self.code[i][j] = random.getrandbits(64)
+                #print(self.code[i][j], end=" ") 
+            #print("\n")
+
+    def hashcode(self):
+        '''
+        For transposition table
+        '''
+        hashcode = self.code[0][self.board[0]]
+
+        for i in np.arange(1, self.total_cells):
+            hashcode = hashcode ^ self.code[i][self.board[i]]
+        
+        return hashcode
+
+    def staticallyEvaluateForToPlay(self):
+        '''
+        For alphabeta search
+        '''
+        win_color = self.detect_five_in_a_row()
+        
+        if win_color == self.current_player:
+            return 1
+        elif win_color == GoBoardUtil.opponent(self.current_player):
+            return -1
+        else:
+            return 0
+    
+    def endOfGame(self):
+        '''
+        For alphabeta search
+        '''
+        return ( len(self.get_empty_points()) < 1 or self.detect_five_in_a_row() != EMPTY )
+
+    def undoMove(self, point):
+        '''
+        For alphabeta search
+        '''
+        self.board[point] = EMPTY
+        self.current_player = GoBoardUtil.opp_color(self.current_player)
+    
+        
+        
+        
+
