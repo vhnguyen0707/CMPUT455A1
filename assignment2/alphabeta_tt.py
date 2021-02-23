@@ -1,6 +1,6 @@
 # cite: course material: alphabeta.py and boolean_negamax_tt.py
 
-INFINITY = 1000000
+#INFINITY = 1000000
 
 def storeResult(tt, state, result):
     tt.store(state.hashcode(), result)
@@ -26,6 +26,8 @@ def alphabeta(state, alpha, beta, tt):
         if value > alpha:
             alpha = value
             best_move = move
+            if alpha == 1:
+                break
         
         if value >= beta: 
             result = beta, None
@@ -36,4 +38,4 @@ def alphabeta(state, alpha, beta, tt):
 
 # initial call with full window
 def call_alphabeta_tt(rootState, tt):
-    return alphabeta(rootState, -INFINITY, INFINITY, tt)
+    return alphabeta(rootState, -1, 1, tt)
