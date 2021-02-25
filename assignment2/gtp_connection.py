@@ -368,12 +368,12 @@ class GtpConnection:
         score, move = call_alphabeta_tt(rootState,tt)
         if score > 0:
             move = format_point(point_to_coord(move, self.board.size))
-            self.respond(self.color_to_string(self.board.current_player) +" "+move)
+            self.respond(color_to_string(self.board.current_player) +" "+move)
         elif score == 0:
             move = format_point(point_to_coord(move, self.board.size))
             self.respond("draw " + move)
         else:
-            self.respond(self.colot_to_string(GoBoardUtil.opponent(self.board.current_player)))
+            self.respond(color_to_string(GoBoardUtil.opponent(self.board.current_player)))
 
     def solve_cmd(self, args):
         p = Process(target=self.solve)
