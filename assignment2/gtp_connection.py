@@ -366,6 +366,7 @@ class GtpConnection:
     def solve(self):
         rootState = self.board.copy()
         score, move = call_alphabeta_tt(rootState,self.tt)
+        print((score, move))
         if score > 0:
             move = format_point(point_to_coord(move, self.board.size))
             self.respond(color_to_string(self.board.current_player) +" "+move)

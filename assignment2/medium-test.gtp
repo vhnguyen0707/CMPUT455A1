@@ -1,0 +1,35 @@
+#test 110, 120, .., 150 are medium
+timelimit 5
+clear_board
+play B C4
+play W C3
+play B D4
+play W D3
+play B E4
+play W E3
+play B F4
+110 solve
+#?[b]
+play W F3
+play B A1
+120 solve
+#?[w B3|w G3]
+130 genmove w
+#?[B3|G3]
+
+clear_board
+play B A5
+play W D5
+play B A4
+play W D4
+play B A3
+play W D3
+play B G5
+play W A7
+play B G4
+play W G7
+play B G3
+140 solve
+#?[w D2|w D6]
+150 genmove w
+#?[D2|D6]
