@@ -42,6 +42,7 @@ class GtpConnection:
         self.go_engine = go_engine
         self.board = board
         self.time_limit = 1
+        self.tt = TranspositionTable()
         self.commands = {
             "protocol_version": self.protocol_version_cmd,
             "quit": self.quit_cmd,
@@ -363,9 +364,8 @@ class GtpConnection:
             return
 
     def solve(self):
-        tt = TranspositionTable() #use separate table for each color
         rootState = self.board.copy()
-        score, move = call_alphabeta_tt(rootState,tt)
+        score, move = call_alphabeta_tt(rootState,self.tt)
         if score > 0:
             move = format_point(point_to_coord(move, self.board.size))
             self.respond(color_to_string(self.board.current_player) +" "+move)
