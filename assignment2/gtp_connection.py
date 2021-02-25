@@ -20,6 +20,10 @@ from board_util import (
 )
 import numpy as np
 import re
+import signal
+from alphabeta_tt import call_alphabeta_tt
+from transposition_table import TranspositionTable
+from multiprocessing import Process
 
 
 class GtpConnection:
@@ -37,6 +41,7 @@ class GtpConnection:
         self._debug_mode = debug_mode
         self.go_engine = go_engine
         self.board = board
+        self.time_limit = 1
         self.commands = {
             "protocol_version": self.protocol_version_cmd,
             "quit": self.quit_cmd,
@@ -58,6 +63,8 @@ class GtpConnection:
             "gogui-rules_board": self.gogui_rules_board_cmd,
             "gogui-rules_final_result": self.gogui_rules_final_result_cmd,
             "gogui-analyze_commands": self.gogui_analyze_cmd
+            "timelimit": self.timelimit_cmd,
+            "solve": self.solve_cmd
         }
 
         # used for argument checking
@@ -70,6 +77,7 @@ class GtpConnection:
             "genmove": (1, "Usage: genmove {w,b}"),
             "play": (2, "Usage: play {b,w} MOVE"),
             "legal_moves": (1, "Usage: legal_moves {w,b}"),
+            "timelimit": (1, "Usage: timelimit INT")
         }
 
     def write(self, data):
@@ -337,6 +345,38 @@ class GtpConnection:
                      "pstring/Rules GameID/gogui-rules_game_id\n"
                      "pstring/Show Board/gogui-rules_board\n"
                      )
+#==================A2-Nguyen========================================
+    def handler(signum, frame):
+        raise Exception("Time Out!")
+
+    def timelimit_cmd(self, args):
+        if 1 <= int(args[0]) <= 100:
+            self.time_limit = int(args[0])
+        else:
+            return
+
+    def solve(self):
+        tt = TranspositionTable() #use separate table for each color
+        rootState = self.board.copy()
+        score, move = call_alphabeta_tt(rootState,tt)
+        if score > 0:
+            move = format_point(point_to_coord(move, self.board.size))
+            self.respond(self.color_to_string(self.board.current_player) +" "+move)
+        elif score == 0:
+            move = format_point(point_to_coord(move, self.board.size))
+            self.respond("draw " + move)
+        else:
+            self.respond(self.colot_to_string(GoBoardUtil.opponent(self.board.current_player)))
+
+    def solve_cmd(self):
+        p = Process(target=self.solve)
+        p.start()
+        p.join(self.time_limit)
+        if p.is_alive():
+            p.terminate()
+            self.respond("unknown")
+#===================================================================
+
 
 def point_to_coord(point, boardsize):
     """
@@ -399,5 +439,14 @@ def color_to_int(c):
     
     try:
         return color_to_int[c]
+    except:
+        raise KeyError("\"{}\" wrong color".format(c))
+
+#====================Nguyen: helper function========================
+def color_to_string(c):
+    colot_to_string = {BLACK: "b", WHITE: "w", EMPTY: "e", BORDER: "BORDER"}
+
+    try:
+        return colot_to_string[c]
     except:
         raise KeyError("\"{}\" wrong color".format(c))
