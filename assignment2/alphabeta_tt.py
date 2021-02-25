@@ -30,7 +30,7 @@ def alphabeta(state, alpha, beta, tt):
                 break
         
         if value >= beta: 
-            result = beta, None
+            result = beta, move
             return storeResult(tt, state, result) 
 
     result = alpha, best_move
