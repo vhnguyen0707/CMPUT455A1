@@ -62,9 +62,9 @@ class GtpConnection:
             "gogui-rules_side_to_move": self.gogui_rules_side_to_move_cmd,
             "gogui-rules_board": self.gogui_rules_board_cmd,
             "gogui-rules_final_result": self.gogui_rules_final_result_cmd,
-            "gogui-analyze_commands": self.gogui_analyze_cmd
+            "gogui-analyze_commands": self.gogui_analyze_cmd,
             "timelimit": self.timelimit_cmd,
-            "solve": self.solve_cmd
+            "solve": self.solve_cmd,
         }
 
         # used for argument checking
@@ -269,8 +269,15 @@ class GtpConnection:
         if self.board.get_empty_points().size == 0:
             self.respond("pass")
             return
+
+        #use solver 
+        result = self.solve_cmd(None)
+        if result == "solved":
+            return
+
         board_color = args[0].lower()
         color = color_to_int(board_color)
+        #generate a random move
         move = self.go_engine.get_move(self.board, color)
         move_coord = point_to_coord(move, self.board.size)
         move_as_string = format_point(move_coord)
@@ -368,16 +375,16 @@ class GtpConnection:
         else:
             self.respond(self.colot_to_string(GoBoardUtil.opponent(self.board.current_player)))
 
-    def solve_cmd(self):
+    def solve_cmd(self, args):
         p = Process(target=self.solve)
         p.start()
         p.join(self.time_limit)
         if p.is_alive():
             p.terminate()
             self.respond("unknown")
+            return 
+        return "solved"
 #===================================================================
-
-
 def point_to_coord(point, boardsize):
     """
     Transform point given as board array index 
