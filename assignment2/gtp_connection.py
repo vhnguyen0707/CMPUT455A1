@@ -64,7 +64,7 @@ class GtpConnection:
             "gogui-rules_final_result": self.gogui_rules_final_result_cmd,
             "gogui-analyze_commands": self.gogui_analyze_cmd,
             "timelimit": self.timelimit_cmd,
-            "solve": self.solve_cmd,
+            "solve": self.solve_cmd
         }
 
         # used for argument checking
