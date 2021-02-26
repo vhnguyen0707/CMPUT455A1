@@ -386,17 +386,17 @@ class GoBoard(object):
         For transposition table
         Apply zobrist hash step 1: generate random number for each (point, color) combination
         '''
-        self.code = np.zeros((self.total_cells, self.total_colors))
-        #print(self.code.shape)
+        self.code = np.zeros((self.total_cells, self.total_colors), dtype=np.uint64)
+        print(self.code.shape)
 
         for i in np.arange(self.total_cells):
             for j in np.arange(self.total_colors):
-                a =random.getrandbits(64)
-                self.code[i][j] = random.getrandbits(64)
-                #print(self.code[i][j], end=" ") 
-            #print("\n")
-        
-        self.code = self.code.astype(int)
+                a = 0
+
+                while a in self.code:
+                    a = random.getrandbits(64)
+
+                self.code[i][j] = a
 
     def hashcode(self):
         '''
