@@ -80,6 +80,9 @@ class GtpConnection:
             "timelimit": (1, "Usage: timelimit INT")
         }
 
+        #check the current command is genmove
+        self.genmove_command = False
+
     def write(self, data):
         stdout.write(data)
 
@@ -94,6 +97,7 @@ class GtpConnection:
         line = stdin.readline()
         while line:
             self.get_cmd(line)
+            self.genmove_command = False
             line = stdin.readline()
 
     def get_cmd(self, command):
@@ -202,7 +206,7 @@ class GtpConnection:
         self.respond()
 
     def known_command_cmd(self, args):
-        """
+        """ 
         Check if command args[0] is known to the GTP interface
         """
         if args[0] in self.commands:
@@ -262,6 +266,7 @@ class GtpConnection:
         """
         Generate a move for the color args[0] in {'b', 'w'}, for the game of gomoku.
         """
+        self.genmove_command = True
         result = self.board.detect_five_in_a_row()
         if result == GoBoardUtil.opponent(self.board.current_player):
             self.respond("resign")
@@ -371,7 +376,11 @@ class GtpConnection:
         if score > 0:
             move = format_point(point_to_coord(move, self.board.size))
             current_color = color_to_string(self.board.current_player)
-            result = "{} {}".format(current_color, move)
+            if self.genmove_command :
+                result = "{}".format(move)
+            else:
+                result = "{} {}".format(current_color, move)
+                
         elif score == 0:
             move = format_point(point_to_coord(move, self.board.size))
             result = "draw {}".format(move)
@@ -462,3 +471,5 @@ def color_to_string(c):
         return colot_to_string[c]
     except:
         raise KeyError("\"{}\" wrong color".format(c))
+
+ 
