@@ -25,6 +25,8 @@ from board_util import (
     MAXSIZE,
     GO_POINT
 )
+from evaluate_state import evaluate_state_forToPlay
+from gtp_connection import format_point, point_to_coord
 
 """
 The GoBoard class implements a board and basic functions to play
@@ -387,7 +389,6 @@ class GoBoard(object):
         Apply zobrist hash step 1: generate random number for each (point, color) combination
         '''
         self.code = np.zeros((self.total_cells, self.total_colors), dtype=np.uint64)
-        #print(self.code.shape)
 
         for i in np.arange(self.total_cells):
             for j in np.arange(self.total_colors):
@@ -404,7 +405,6 @@ class GoBoard(object):
         '''
 
         board = self.nonpadded_1dboard()
-        #print(board.shape)
         hashcode = self.code[0][board[0]]
 
         for i in np.arange(1, self.total_cells):
@@ -418,12 +418,12 @@ class GoBoard(object):
         '''
         win_color = self.detect_five_in_a_row()
         
-        if win_color == self.current_player:
-            return 1
-        elif win_color == GoBoardUtil.opponent(self.current_player):
-            return -1
-        else:
+        if win_color == EMPTY:
             return 0
+        elif win_color == self.current_player:
+            return 1
+        else:
+            return -1
     
     def endOfGame(self):
         '''
@@ -431,12 +431,24 @@ class GoBoard(object):
         '''
         return ( len(self.get_empty_points()) < 1 or self.detect_five_in_a_row() != EMPTY )
 
-    def undoMove(self, point):
+    def undoMove(self, move):
         '''
         For alphabeta search
         '''
-        self.board[point] = EMPTY
+        self.board[move] = EMPTY
         self.current_player = GoBoardUtil.opponent(self.current_player)
+
+    def get_move_value(self, move):
+        self.play_move(move, self.current_player)
+        value = -evaluate_state_forToPlay(self)
+        self.undoMove(move)
+        return value
+    
+    def sort_moves(self):
+        moves = self.get_empty_points()
+        
+        return sorted(moves, key=self.get_move_value, reverse=True)
+                
     
         
         

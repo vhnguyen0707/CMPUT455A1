@@ -1,6 +1,6 @@
 # cite: course material: alphabeta.py and boolean_negamax_tt.py
 
-#INFINITY = 1000000
+from board_util import GoBoardUtil
 
 def storeResult(tt, state, result):
     tt.store(state.hashcode(), result)
@@ -18,7 +18,7 @@ def alphabeta(state, alpha, beta, tt):
 
     best_move = None
 
-    for move in state.get_empty_points():
+    for move in state.sort_moves():
         state.play_move(move, state.current_player)
         value = -alphabeta(state, -beta, -alpha, tt)[0]
         state.undoMove(move)

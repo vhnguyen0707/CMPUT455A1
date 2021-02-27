@@ -8,10 +8,12 @@ play W D3
 play B E4
 play W E3
 play B F4
+showboard
 110 solve
 #?[b]
 play W F3
 play B A1
+showboard
 120 solve
 #?[w B3|w G3]
 130 genmove w
@@ -29,6 +31,7 @@ play W A7
 play B G4
 play W G7
 play B G3
+showboard
 140 solve
 #?[w D2|w D6]
 150 genmove w
