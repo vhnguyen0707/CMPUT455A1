@@ -359,25 +359,29 @@ class GtpConnection:
     def timelimit_cmd(self, args):
         if 1 <= int(args[0]) <= 100:
             self.time_limit = int(args[0])
+            self.respond()
         else:
-            return
+            self.time_limit = 1
+        self.respond()
 
-    def solve(self):
+    def solver(self):
         tt = TranspositionTable()
         rootState = self.board.copy()
         score, move = call_alphabeta_tt(rootState,tt)
-        print((score, move))
         if score > 0:
             move = format_point(point_to_coord(move, self.board.size))
-            self.respond(color_to_string(self.board.current_player) +" "+move)
+            current_color = color_to_string(self.board.current_player)
+            result = "{} {}".format(current_color, move)
         elif score == 0:
             move = format_point(point_to_coord(move, self.board.size))
-            self.respond("draw " + move)
+            result = "draw {}".format(move)
         else:
-            self.respond(color_to_string(GoBoardUtil.opponent(self.board.current_player)))
+            opponent_color = color_to_string(GoBoardUtil.opponent(self.board.current_player))
+            result = "{}".format(opponent_color)
+        self.respond(result)
 
     def solve_cmd(self, args):
-        p = Process(target=self.solve)
+        p = Process(target=self.solver)
         p.start()
         p.join(self.time_limit)
         if p.is_alive():
