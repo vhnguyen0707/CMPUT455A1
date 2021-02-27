@@ -387,7 +387,7 @@ class GoBoard(object):
         Apply zobrist hash step 1: generate random number for each (point, color) combination
         '''
         self.code = np.zeros((self.total_cells, self.total_colors), dtype=np.uint64)
-        print(self.code.shape)
+        #print(self.code.shape)
 
         for i in np.arange(self.total_cells):
             for j in np.arange(self.total_colors):

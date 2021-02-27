@@ -337,7 +337,7 @@ play B A2
 play W F2
 play B E2
 play W G2
-#90 solve
+90 solve
 #?[b C1]
 100 genmove b
 #?[C1]

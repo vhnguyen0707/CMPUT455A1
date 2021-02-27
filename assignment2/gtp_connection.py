@@ -364,7 +364,6 @@ class GtpConnection:
     def timelimit_cmd(self, args):
         if 1 <= int(args[0]) <= 100:
             self.time_limit = int(args[0])
-            self.respond()
         else:
             self.time_limit = 1
         self.respond()
