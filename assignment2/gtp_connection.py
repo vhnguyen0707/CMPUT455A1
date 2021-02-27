@@ -358,14 +358,12 @@ class GtpConnection:
                      "pstring/Show Board/gogui-rules_board\n"
                      )
 #==================A2-Nguyen========================================
-    def handler(signum, frame):
-        raise Exception("Time Out!")
-
     def timelimit_cmd(self, args):
         if 1 <= int(args[0]) <= 100:
             self.time_limit = int(args[0])
-        else:
-            self.time_limit = 1
+        else:   
+            self.respond("Invalid argument!")
+            return
         self.respond()
 
     def solver(self):
