@@ -23,13 +23,14 @@ def get_5cell_line_value(state, line):
     count_black = 0
     count_white = 0
 
-    for cell in line:
-        cell_color = state.board[cell]
-
+    i = 0
+    while i < CELLS_PER_LINE:
+        cell_color == state.board[line[i]]
         if cell_color == BLACK:
             count_black += 1
         elif cell_color == WHITE:
             count_white += 1
+        i += 1
 
     if count_black > 0 and count_white > 0:
         return 0
@@ -44,7 +45,8 @@ def evaluate_state_forToPlay(state):
     lines = state.rows + state.cols + state.diags
 
     for line in lines:
-        for i in range(len(line) - CELLS_PER_LINE + 1):
-            value += get_5cell_line_value(state, line[i:i+CELLS_PER_LINE])
+        for i in range(len(line)):
+            if (i + CELLS_PER_LINE) <= len(line) :
+                value += get_5cell_line_value(state, line[i:i+CELLS_PER_LINE])
     
     return value
