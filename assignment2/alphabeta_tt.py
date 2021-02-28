@@ -12,7 +12,7 @@ def alphabeta(state, alpha, beta, tt):
         result = state.staticallyEvaluateForToPlay(), None
         return storeResult(tt, state, result)
 
-    best_move = None
+    good_move = None
 
     for move in state.sort_moves():
         state.play_move(move, state.current_player)
@@ -21,7 +21,7 @@ def alphabeta(state, alpha, beta, tt):
 
         if value > alpha:
             alpha = value
-            best_move = move
+            good_move = move
             if alpha == 1:
                 break
         
