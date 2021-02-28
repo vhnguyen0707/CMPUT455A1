@@ -25,8 +25,6 @@ from board_util import (
     MAXSIZE,
     GO_POINT
 )
-from evaluate_state import evaluate_state_forToPlay
-from gtp_connection import format_point, point_to_coord
 
 """
 The GoBoard class implements a board and basic functions to play
@@ -121,7 +119,7 @@ class GoBoard(object):
         self.board = np.full(self.maxpoint, BORDER, dtype=GO_POINT)
         self._initialize_empty_points(self.board)
         self.calculate_rows_cols_diags()
-        #=============A2================
+        #======================= A2 =======================
         self.total_cells = size * size
         self.total_colors = 3
         self.zobrist_random()
@@ -379,7 +377,7 @@ class GoBoard(object):
         return EMPTY
 
 
-    #============================A2-Susan============================
+    #========================================== A2 ==========================================
     def nonpadded_1dboard(self):
         return np.delete(self.board, np.where(self.board == BORDER))
         
@@ -403,7 +401,6 @@ class GoBoard(object):
         '''
         For transposition table
         '''
-
         board = self.nonpadded_1dboard()
         hashcode = self.code[0][board[0]]
 
@@ -439,16 +436,83 @@ class GoBoard(object):
         self.current_player = GoBoardUtil.opponent(self.current_player)
 
     def get_move_value(self, move):
+        '''
+        Get heuristic evaluation for a move
+        '''
         self.play_move(move, self.current_player)
-        value = -evaluate_state_forToPlay(self)
+        value = -self.heuristic_state_evaluate()
         self.undoMove(move)
         return value
     
     def sort_moves(self):
+        '''
+        Sort legal moves by heuristic value
+        '''
         moves = self.get_empty_points()
-        
         return sorted(moves, key=self.get_move_value, reverse=True)
-                
+
+    def heuristic_state_evaluate(self):
+        '''
+        Compute heuristic value for a state
+        '''
+        count_black_3, count_white_3 = self.count_n_in_a_row(3)
+        count_black_4, count_white_4 = self.count_n_in_a_row(4)
+        count_black_5, count_white_5 = self.count_n_in_a_row(5)
+
+        value_black = 0.0000005 * count_black_3 +  0.000002 * count_black_4 + 1 * count_black_5
+        value_white = 0.0000005 * count_white_3 +  0.000002 * count_white_4 + 1 * count_white_5
+
+        if self.current_player == BLACK:
+            return value_black - value_white
+        else:
+            return value_white - value_black
+        
+    def count_n_in_a_row(self, n):
+        '''
+        Returns the number of lines has n_in_a_row for BLACK AND WHITE
+        '''
+        count_black = 0
+        count_white = 0
+
+        for r in self.rows:
+            result = self.has_n_in_list(r, n)
+            if result == BLACK:
+                count_black += 1
+            elif result == WHITE:
+                count_white += 1
+        for c in self.cols:
+            result = self.has_n_in_list(c, n)
+            if result == BLACK:
+                count_black += 1
+            elif result == WHITE:
+                count_white += 1
+        for d in self.diags:
+            result = self.has_n_in_list(d, n)
+            if result == BLACK:
+                count_black += 1
+            elif result == WHITE:
+                count_white += 1
+
+        return count_black, count_white
+
+    def has_n_in_list(self, list, n):
+        """
+        Returns BLACK or WHITE if any n in a rows exist in the list.
+        EMPTY otherwise.
+        """
+        prev = BORDER
+        counter = 1
+        for stone in list:
+            if self.get_color(stone) == prev:
+                counter += 1
+            else:
+                counter = 1
+                prev = self.get_color(stone)
+            if counter == n and prev != EMPTY:
+                return prev
+        return EMPTY
+
+    
     
         
         

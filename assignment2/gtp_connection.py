@@ -357,7 +357,7 @@ class GtpConnection:
                      "pstring/Rules GameID/gogui-rules_game_id\n"
                      "pstring/Show Board/gogui-rules_board\n"
                      )
-#==================A2-Nguyen========================================
+#================== A2 ========================================
     def timelimit_cmd(self, args):
         if 1 <= int(args[0]) <= 100:
             self.time_limit = int(args[0])
@@ -460,7 +460,7 @@ def color_to_int(c):
     except:
         raise KeyError("\"{}\" wrong color".format(c))
 
-#====================Nguyen: helper function========================
+#==================== A2: helper function ========================
 def color_to_string(c):
     colot_to_string = {BLACK: "b", WHITE: "w", EMPTY: "e", BORDER: "BORDER"}
 

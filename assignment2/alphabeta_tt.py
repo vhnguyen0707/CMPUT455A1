@@ -1,7 +1,3 @@
-# cite: course material: alphabeta.py and boolean_negamax_tt.py
-
-from board_util import GoBoardUtil
-
 def storeResult(tt, state, result):
     tt.store(state.hashcode(), result)
     return result
@@ -36,6 +32,5 @@ def alphabeta(state, alpha, beta, tt):
     result = alpha, best_move
     return storeResult(tt, state, result)
 
-# initial call with full window
 def call_alphabeta_tt(rootState, tt):
     return alphabeta(rootState, -1, 1, tt)
