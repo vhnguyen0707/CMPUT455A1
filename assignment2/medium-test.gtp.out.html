@@ -1,0 +1,178 @@
+<html>
+<head>
+<title>Output: medium-test.gtp</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="generator" content="gogui-regress 1.5.1 (http://gogui.sf.net)">
+<style type="text/css">
+<!--
+body { margin:0; }
+span.comment { color:#999999; }
+span.fail { font-weight:bold; color:#ff5454; }
+span.error { font-weight:bold; color:#ffa954; }
+span.stderr { color:#666666; }
+span.invalid { background:#ff5454;}
+span.pass { font-weight:bold; color:#5eaf5e; }
+span.test { font-weight:bold; }
+-->
+</style>
+</head>
+<body bgcolor="white" text="black" link="#0000ee" vlink="#551a8b">
+<table border="0" width="100%" bgcolor="#91aee8" border="0">
+<tr><td>
+<h1>Output: medium-test.gtp</h1>
+</td></tr>
+</table>
+<table width="100%" bgcolor="#e0e0e0">
+<tr><th align="left">Date:</th><td>March 1, 2021 at 10:04:46 AM IST</td></tr>
+<tr><th align="left">Host:</th><td>ubunu2004 (Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz)</td></tr>
+<tr><th align="left" valign="top">Command:</th>
+<td valign="top"><tt>python3 Gomoku.py</tt></td></tr>
+</table>
+<pre style="margin:1em">
+name
+= GomokuAssignment2
+
+version
+= 1.0
+
+cputime
+? Unknown command
+
+</pre>
+<hr style="margin:1em" size="1">
+<pre style="margin:1em">
+<span class="comment">#test 110, 120, .., 150 are medium
+</span><span class="command">timelimit 5
+</span>= 
+
+<span class="command">clear_board
+</span>= 
+
+<span class="command">play B C4
+</span>= 
+
+<span class="command">play W C3
+</span>= 
+
+<span class="command">play B D4
+</span>= 
+
+<span class="command">play W D3
+</span>= 
+
+<span class="command">play B E4
+</span>= 
+
+<span class="command">play W E3
+</span>= 
+
+<span class="command">play B F4
+</span>= 
+
+<span class="command">showboard
+</span>= 
+[[0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0]
+ [0 0 2 2 2 0 0]
+ [0 0 1 1 1 1 0]
+ [0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0]]
+
+<span class="test"><a name="110">110 solve
+</a>#?[b]
+= b
+
+</span><span class="command">play W F3
+</span>= 
+
+<span class="command">play B A1
+</span>= 
+
+<span class="command">showboard
+</span>= 
+[[1 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0]
+ [0 0 2 2 2 2 0]
+ [0 0 1 1 1 1 0]
+ [0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0]]
+
+<span class="test"><a name="120">120 solve
+</a>#?[w B3|w G3]
+= w B3
+
+<a name="130">130 genmove w
+</a>#?[B3|G3]
+= B3
+
+</span>
+<span class="command">clear_board
+</span>= 
+
+<span class="command">play B A5
+</span>= 
+
+<span class="command">play W D5
+</span>= 
+
+<span class="command">play B A4
+</span>= 
+
+<span class="command">play W D4
+</span>= 
+
+<span class="command">play B A3
+</span>= 
+
+<span class="command">play W D3
+</span>= 
+
+<span class="command">play B G5
+</span>= 
+
+<span class="command">play W A7
+</span>= 
+
+<span class="command">play B G4
+</span>= 
+
+<span class="command">play W G7
+</span>= 
+
+<span class="command">play B G3
+</span>= 
+
+<span class="command">showboard
+</span>= 
+[[0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0]
+ [1 0 0 2 0 0 1]
+ [1 0 0 2 0 0 1]
+ [1 0 0 2 0 0 1]
+ [0 0 0 0 0 0 0]
+ [2 0 0 0 0 0 2]]
+
+<span class="test"><a name="140">140 solve
+</a>#?[w D2|w D6]
+= w D2
+
+<a name="150">150 genmove w
+</a>#?[D2|D6]
+= D2
+
+</span></pre>
+<hr style="margin:1em" size="1">
+<pre style="margin:1em">
+</span>cputime
+? Unknown command
+
+quit
+= 
+
+</pre>
+<hr style="margin-bottom:0" size="1">
+<p style="margin-top:1; margin-right:5" align="right"><i><small>Generated on 3/1/21, 10:04 AM by gogui-regress 1.5.1 (<a href="http://gogui.sf.net">http://gogui.sf.net</a>)</small></i></p>
+</body>
+</html>
