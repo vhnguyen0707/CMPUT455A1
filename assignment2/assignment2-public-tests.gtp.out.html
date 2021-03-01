@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Output: easy-test.gtp</title>
+<title>Output: assignment2-public-tests.gtp</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="generator" content="gogui-regress 1.5.1 (http://gogui.sf.net)">
 <style type="text/css">
@@ -19,12 +19,12 @@ span.test { font-weight:bold; }
 <body bgcolor="white" text="black" link="#0000ee" vlink="#551a8b">
 <table border="0" width="100%" bgcolor="#91aee8" border="0">
 <tr><td>
-<h1>Output: easy-test.gtp</h1>
+<h1>Output: assignment2-public-tests.gtp</h1>
 </td></tr>
 </table>
 <table width="100%" bgcolor="#e0e0e0">
-<tr><th align="left">Date:</th><td>March 1, 2021 at 10:03:58 AM IST</td></tr>
-<tr><th align="left">Host:</th><td>ubunu2004 (Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz)</td></tr>
+<tr><th align="left">Date:</th><td>February 28, 2021 9:58:56 PM MST</td></tr>
+<tr><th align="left">Host:</th><td>uf08 (Intel(R) Core(TM) i5-8500 CPU @ 3.00GHz)</td></tr>
 <tr><th align="left" valign="top">Command:</th>
 <td valign="top"><tt>python3 Gomoku.py</tt></td></tr>
 </table>
@@ -1032,10 +1032,231 @@ cputime
 </a>#?[C1]
 = C1
 
-</span></pre>
+</span>
+<span class="comment">#test 110, 120, .., 150 are medium
+</span><span class="command">timelimit 5
+</span>= 
+
+<span class="command">clear_board
+</span>= 
+
+<span class="command">play B C4
+</span>= 
+
+<span class="command">play W C3
+</span>= 
+
+<span class="command">play B D4
+</span>= 
+
+<span class="command">play W D3
+</span>= 
+
+<span class="command">play B E4
+</span>= 
+
+<span class="command">play W E3
+</span>= 
+
+<span class="command">play B F4
+</span>= 
+
+<span class="test"><a name="110">110 solve
+</a>#?[b]
+= b
+
+</span><span class="command">play W F3
+</span>= 
+
+<span class="command">play B A1
+</span>= 
+
+<span class="test"><a name="120">120 solve
+</a>#?[w B3|w G3]
+= w B3
+
+<a name="130">130 genmove w
+</a>#?[B3|G3]
+= B3
+
+</span>
+<span class="command">clear_board
+</span>= 
+
+<span class="command">play B A5
+</span>= 
+
+<span class="command">play W D5
+</span>= 
+
+<span class="command">play B A4
+</span>= 
+
+<span class="command">play W D4
+</span>= 
+
+<span class="command">play B A3
+</span>= 
+
+<span class="command">play W D3
+</span>= 
+
+<span class="command">play B G5
+</span>= 
+
+<span class="command">play W A7
+</span>= 
+
+<span class="command">play B G4
+</span>= 
+
+<span class="command">play W G7
+</span>= 
+
+<span class="command">play B G3
+</span>= 
+
+<span class="test"><a name="140">140 solve
+</a>#?[w D2|w D6]
+= w D2
+
+<a name="150">150 genmove w
+</a>#?[D2|D6]
+= D2
+
+</span>
+<span class="comment">#test 160, 170, ..., 200 are hard
+</span><span class="command">timelimit 5
+</span>= 
+
+<span class="command">boardsize 5
+</span>= 
+
+<span class="test"><a name="160">160 solve
+</a>#?[unknown]
+= unknown
+
+</span>
+<span class="command">timelimit 30
+</span>= 
+
+<span class="command">boardsize 9
+</span>= 
+
+<span class="test"><a name="170">170 solve
+</a>#?[unknown]
+= unknown
+
+</span>
+<span class="command">timelimit 30
+</span>= 
+
+<span class="command">boardsize 7
+</span>= 
+
+<span class="command">play B C3
+</span>= 
+
+<span class="command">play W A2
+</span>= 
+
+<span class="command">play B C4
+</span>= 
+
+<span class="command">play W G6
+</span>= 
+
+<span class="command">play B D4
+</span>= 
+
+<span class="command">play W A4
+</span>= 
+
+<span class="command">play B E3
+</span>= 
+
+<span class="command">play W G7
+</span>= 
+
+<span class="test"><a name="180">180 solve
+</a>#?[b C5]
+= b C5
+
+</span>
+<span class="command">timelimit 60
+</span>= 
+
+<span class="command">boardsize 7
+</span>= 
+
+<span class="command">play B C3
+</span>= 
+
+<span class="command">play W A1
+</span>= 
+
+<span class="command">play B C4
+</span>= 
+
+<span class="command">play W G6
+</span>= 
+
+<span class="command">play B D4
+</span>= 
+
+<span class="command">play W A4
+</span>= 
+
+<span class="command">play B E3
+</span>= 
+
+<span class="command">play W G7
+</span>= 
+
+<span class="test"><a name="190">190 solve
+</a>#?[b C5]
+= b C5
+
+</span>
+<span class="command">timelimit 30
+</span>= 
+
+<span class="command">boardsize 7
+</span>= 
+
+<span class="command">play B C3
+</span>= 
+
+<span class="command">play W A2
+</span>= 
+
+<span class="command">play B C4
+</span>= 
+
+<span class="command">play W G6
+</span>= 
+
+<span class="command">play B D4
+</span>= 
+
+<span class="command">play W A4
+</span>= 
+
+<span class="command">play B E3
+</span>= 
+
+<span class="command">play W G2
+</span>= 
+
+<span class="test"><a name="200">200 solve
+</a>#?[b C5]
+= b C5
+
+</span>
+</pre>
 <hr style="margin:1em" size="1">
 <pre style="margin:1em">
-</span>cputime
+cputime
 ? Unknown command
 
 quit
@@ -1043,6 +1264,6 @@ quit
 
 </pre>
 <hr style="margin-bottom:0" size="1">
-<p style="margin-top:1; margin-right:5" align="right"><i><small>Generated on 3/1/21, 10:03 AM by gogui-regress 1.5.1 (<a href="http://gogui.sf.net">http://gogui.sf.net</a>)</small></i></p>
+<p style="margin-top:1; margin-right:5" align="right"><i><small>Generated on 2/28/21 10:00 PM by gogui-regress 1.5.1 (<a href="http://gogui.sf.net">http://gogui.sf.net</a>)</small></i></p>
 </body>
 </html>

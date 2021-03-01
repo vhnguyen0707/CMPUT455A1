@@ -394,7 +394,7 @@ class GtpConnection:
         if not p.is_alive():
             self.respond(self.solver())
         else:
-            p.kill()
+            p.terminate()
             self.respond("unknown")
             return 
         return "solved"
