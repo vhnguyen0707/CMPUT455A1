@@ -29,7 +29,7 @@ def alphabeta(state, alpha, beta, tt):
             result = beta, move
             return storeResult(tt, state, result) 
 
-    result = alpha, best_move
+    result = alpha, good_move
     return storeResult(tt, state, result)
 
 def call_alphabeta_tt(rootState, tt):

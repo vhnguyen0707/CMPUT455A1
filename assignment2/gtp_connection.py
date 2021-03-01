@@ -384,14 +384,17 @@ class GtpConnection:
         else:
             opponent_color = color_to_string(GoBoardUtil.opponent(self.board.current_player))
             result = "{}".format(opponent_color)
-        self.respond(result)
+        #self.respond(result)
+        return result
 
     def solve_cmd(self, args):
         p = Process(target=self.solver)
         p.start()
         p.join(self.time_limit)
-        if p.is_alive():
-            p.terminate()
+        if not p.is_alive():
+            self.respond(self.solver())
+        else:
+            p.kill()
             self.respond("unknown")
             return 
         return "solved"
