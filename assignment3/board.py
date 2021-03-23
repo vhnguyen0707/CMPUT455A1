@@ -42,6 +42,7 @@ class GoBoard(object):
         assert 2 <= size <= MAXSIZE
         self.reset(size)
         self.calculate_rows_cols_diags()
+        self.generate_pattern()
 
     def calculate_rows_cols_diags(self):
         if self.size < 5:
@@ -370,3 +371,40 @@ class GoBoard(object):
             if counter == 5 and prev != EMPTY:
                 return prev
         return EMPTY
+
+
+    #================ A3 ===================
+    def generate_pattern(self):
+        # win pattern:
+        b_win = np.array([BLACK,BLACK,BLACK,BLACK,BLACK])
+        w_win = 3 - b_win
+        win = np.array([b_win, w_win])
+        #print("win pattern:\n", win)
+        #print(type(win[0,0]))
+
+        # blockwin pattern:
+        b_blockwin = np.array([[BLACK,WHITE,WHITE,WHITE,WHITE], [WHITE,BLACK,WHITE,WHITE,WHITE],
+                                [WHITE,WHITE,BLACK,WHITE,WHITE], [WHITE,WHITE,WHITE,BLACK,WHITE],
+                                [WHITE,WHITE,WHITE,WHITE,BLACK]
+                            ])
+        w_blockwin = 3 - b_blockwin
+        blockwin = np.array([b_blockwin, w_blockwin])
+        #print("blockwin pattern:\n", blockwin)
+
+        # openfour pattern:
+        b_open4 = np.array([EMPTY,BLACK,BLACK,BLACK,BLACK,EMPTY])
+        w_open4 = 3 - b_open4
+        w_open4[w_open4 == 3] = EMPTY
+        open4 = np.array([b_open4, w_open4])
+        #print("openfour pattern:\n", open4)
+
+        # blockopenfour pattern:
+        b_blockopen4 = np.array([[EMPTY,BLACK,WHITE,WHITE,WHITE,EMPTY], [EMPTY,WHITE,WHITE,WHITE,BLACK,EMPTY],
+                                  [BLACK,WHITE,WHITE,EMPTY,WHITE,EMPTY], [EMPTY,WHITE,WHITE,BLACK,WHITE,EMPTY], 
+                                  [EMPTY,WHITE,WHITE,EMPTY,WHITE,BLACK], [BLACK,WHITE,EMPTY,WHITE,WHITE,EMPTY],
+                                  [EMPTY,WHITE,BLACK,WHITE,WHITE,EMPTY], [EMPTY,WHITE,EMPTY,WHITE,WHITE,BLACK]
+                                ])# have not include case: x.ooo..
+        w_blockopen4 = 3 - b_blockopen4
+        w_blockopen4[w_blockopen4 == 3] = EMPTY
+        blockopen4 = np.array([b_blockopen4, w_blockopen4])
+        #print("blockopenfour pattern:\n", blockopen4)
