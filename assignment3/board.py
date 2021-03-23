@@ -402,9 +402,17 @@ class GoBoard(object):
         b_blockopen4 = np.array([[EMPTY,BLACK,WHITE,WHITE,WHITE,EMPTY], [EMPTY,WHITE,WHITE,WHITE,BLACK,EMPTY],
                                   [BLACK,WHITE,WHITE,EMPTY,WHITE,EMPTY], [EMPTY,WHITE,WHITE,BLACK,WHITE,EMPTY], 
                                   [EMPTY,WHITE,WHITE,EMPTY,WHITE,BLACK], [BLACK,WHITE,EMPTY,WHITE,WHITE,EMPTY],
-                                  [EMPTY,WHITE,BLACK,WHITE,WHITE,EMPTY], [EMPTY,WHITE,EMPTY,WHITE,WHITE,BLACK]
-                                ])# have not include case: x.ooo..
+                                  [EMPTY,WHITE,BLACK,WHITE,WHITE,EMPTY], [EMPTY,WHITE,EMPTY,WHITE,WHITE,BLACK],
+                                  [BLACK,EMPTY,WHITE,WHITE,WHITE,BLACK], [BLACK,WHITE,WHITE,WHITE,EMPTY,EMPTY],
+                                  [EMPTY,EMPTY,WHITE,WHITE,WHITE,BLACK], [BLACK,EMPTY,WHITE,WHITE,WHITE,EMPTY],
+                                  [EMPTY,WHITE,WHITE,WHITE,EMPTY,BLACK],
+                                  [BLACK,EMPTY,WHITE,WHITE,WHITE,EMPTY], [EMPTY,WHITE,WHITE,WHITE,EMPTY,BLACK] # need more condition
+                                ])
+
         w_blockopen4 = 3 - b_blockopen4
         w_blockopen4[w_blockopen4 == 3] = EMPTY
+    
         blockopen4 = np.array([b_blockopen4, w_blockopen4])
         #print("blockopenfour pattern:\n", blockopen4)
+
+        return win, blockwin, open4, blockopen4
