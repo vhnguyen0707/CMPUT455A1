@@ -475,6 +475,10 @@ class GoBoard(object):
             diag2 = None
 
         return row, col, diag1, diag2
+
+    def undoMove(self, move):
+        self.board[move] = EMPTY
+        self.current_player = GoBoardUtil.opponent(self.current_player)
         
         
         
