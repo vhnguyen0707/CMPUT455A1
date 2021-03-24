@@ -407,8 +407,7 @@ class GoBoard(object):
                                   [EMPTY,WHITE,BLACK,WHITE,WHITE,EMPTY], [EMPTY,WHITE,EMPTY,WHITE,WHITE,BLACK],
                                   [BLACK,EMPTY,WHITE,WHITE,WHITE,BLACK], [BLACK,WHITE,WHITE,WHITE,EMPTY,EMPTY],
                                   [EMPTY,EMPTY,WHITE,WHITE,WHITE,BLACK], [BLACK,EMPTY,WHITE,WHITE,WHITE,EMPTY],
-                                  [EMPTY,WHITE,WHITE,WHITE,EMPTY,BLACK],
-                                  [BLACK,EMPTY,WHITE,WHITE,WHITE,EMPTY], [EMPTY,WHITE,WHITE,WHITE,EMPTY,BLACK]
+                                  [EMPTY,WHITE,WHITE,WHITE,EMPTY,BLACK]
                                 ])
         b_blockopen4_more = np.array([BLACK,EMPTY,WHITE,WHITE,WHITE,EMPTY,BLACK]) # case: x.ooo.x
 
