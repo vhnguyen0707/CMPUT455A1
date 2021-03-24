@@ -24,6 +24,7 @@ from board_util import (
     MAXSIZE,
     GO_POINT
 )
+import math
 
 """
 The GoBoard class implements a board and basic functions to play
@@ -406,13 +407,63 @@ class GoBoard(object):
                                   [BLACK,EMPTY,WHITE,WHITE,WHITE,BLACK], [BLACK,WHITE,WHITE,WHITE,EMPTY,EMPTY],
                                   [EMPTY,EMPTY,WHITE,WHITE,WHITE,BLACK], [BLACK,EMPTY,WHITE,WHITE,WHITE,EMPTY],
                                   [EMPTY,WHITE,WHITE,WHITE,EMPTY,BLACK],
-                                  [BLACK,EMPTY,WHITE,WHITE,WHITE,EMPTY], [EMPTY,WHITE,WHITE,WHITE,EMPTY,BLACK] # need more condition
+                                  [BLACK,EMPTY,WHITE,WHITE,WHITE,EMPTY], [EMPTY,WHITE,WHITE,WHITE,EMPTY,BLACK]
                                 ])
+        b_blockopen4_more = np.array([BLACK,EMPTY,WHITE,WHITE,WHITE,EMPTY,BLACK]) # case: x.ooo.x
 
         w_blockopen4 = 3 - b_blockopen4
         w_blockopen4[w_blockopen4 == 3] = EMPTY
-    
-        blockopen4 = np.array([b_blockopen4, w_blockopen4])
+        
+        w_blockopen4_more = 3 - b_blockopen4_more
+        w_blockopen4_more[w_blockopen4_more == 3] = EMPTY
+
+        blockopen4 = np.array([b_blockopen4, w_blockopen4, b_blockopen4_more, w_blockopen4_more])
         #print("blockopenfour pattern:\n", blockopen4)
 
         return win, blockwin, open4, blockopen4
+
+    
+    def get_7inlines_contain_point(self, point):
+        board2d = GoBoardUtil.get_twoD_board(self)
+
+        # index 1D to 2D
+        r = point // self.size
+        c = point % self.size
+        
+        # NS:
+        N = max(r - 6, 0)
+        S = min(r + 6, self.size - 1)
+        col = board2d[N:(S+1), c]
+
+        # WE:
+        W = max(c - 6, 0)
+        E = min(c + 6, self.size - 1)
+        row = board2d[r,W:(E+1)]
+        
+        # NW -> SE:
+        diag1 = []
+
+        NW = min(r, c, 6)
+        SE = min(self.size - 1 - r, self.size - 1 - c, 6)
+
+        for i in range(-NW,SE+1):
+            diag1.append(board2d[r+i,c+i])
+            #print("diag1: ", (r+i,c+i))
+
+        # NE -> SW:
+        diag2 = []
+        
+        NE = min(r,self.size - 1 - c, 6)
+        SW = min(self.size - 1 - r, c, 6)
+        
+        for i in range(-NE,SW+1):
+            diag2.append(board2d[r+i,c-i])
+            #print("diag2: ", (r+i,c-i))
+        
+        diag1 = np.array(diag1)
+        diag2 = np.array(diag2)
+
+        return row, col, diag1, diag2
+        
+        
+        
