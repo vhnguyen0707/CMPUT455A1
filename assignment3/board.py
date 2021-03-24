@@ -451,7 +451,7 @@ class GoBoard(object):
 
         for i in range(-NW,SE+1):
             diag1.append(board2d[r+i,c+i])
-            print("diag1: ", (r+i,c+i))
+            #print("diag1: ", (r+i,c+i))
 
         # NE -> SW:
         diag2 = []
@@ -461,7 +461,7 @@ class GoBoard(object):
         
         for i in range(-NE,SW+1):
             diag2.append(board2d[r+i,c-i])
-            print("diag2: ", (r+i,c-i))
+            #print("diag2: ", (r+i,c-i))
 
         diag1 = np.array(diag1)
         diag2 = np.array(diag2)
