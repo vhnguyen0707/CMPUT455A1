@@ -44,6 +44,7 @@ class GoBoard(object):
         self.reset(size)
         self.calculate_rows_cols_diags()
         self.generate_pattern()
+        self.get_nlines_contain_point(5,5)
 
     def calculate_rows_cols_diags(self):
         if self.size < 5:
@@ -423,7 +424,9 @@ class GoBoard(object):
         return win, blockwin, open4, blockopen4
 
     
-    def get_7inlines_contain_point(self, point):
+    def get_nlines_contain_point(self, point, n_in_row):
+        n = n_in_row - 1
+
         board2d = GoBoardUtil.get_twoD_board(self)
 
         # index 1D to 2D
@@ -431,37 +434,46 @@ class GoBoard(object):
         c = point % self.size
         
         # NS:
-        N = max(r - 6, 0)
-        S = min(r + 6, self.size - 1)
+        N = max(r - n, 0)
+        S = min(r + n, self.size - 1)
         col = board2d[N:(S+1), c]
 
         # WE:
-        W = max(c - 6, 0)
-        E = min(c + 6, self.size - 1)
+        W = max(c - n, 0)
+        E = min(c + n, self.size - 1)
         row = board2d[r,W:(E+1)]
-        
+
         # NW -> SE:
         diag1 = []
 
-        NW = min(r, c, 6)
-        SE = min(self.size - 1 - r, self.size - 1 - c, 6)
+        NW = min(r, c, n)
+        SE = min(self.size - 1 - r, self.size - 1 - c, n)
 
         for i in range(-NW,SE+1):
             diag1.append(board2d[r+i,c+i])
-            #print("diag1: ", (r+i,c+i))
+            print("diag1: ", (r+i,c+i))
 
         # NE -> SW:
         diag2 = []
         
-        NE = min(r,self.size - 1 - c, 6)
-        SW = min(self.size - 1 - r, c, 6)
+        NE = min(r,self.size - 1 - c, n)
+        SW = min(self.size - 1 - r, c, n)
         
         for i in range(-NE,SW+1):
             diag2.append(board2d[r+i,c-i])
-            #print("diag2: ", (r+i,c-i))
-        
+            print("diag2: ", (r+i,c-i))
+
         diag1 = np.array(diag1)
         diag2 = np.array(diag2)
+
+        if len(row) < n_in_row:
+            row = None
+        if len(col) < n_in_row:
+            col = None
+        if len(diag1) < n_in_row:
+            diag1 = None
+        if len(diag2) < n_in_row:
+            diag2 = None
 
         return row, col, diag1, diag2
         
