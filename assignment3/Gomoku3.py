@@ -67,7 +67,7 @@ class Gomoku():
         cboard.play_move(move, toPlay)
         opp = GoBoardUtil.opponent(toPlay)
         passes = 0
-        while board.detect_five_in_a_row() != EMPTY ||len(board.get_empty_points()) != 0:
+        while board.detect_five_in_a_row() != EMPTY or len(board.get_empty_points()) != 0:
             color = board.current_player
             move = GoBoardUtil.generate_random_move(board, color)
             board.play_move(move, color)
