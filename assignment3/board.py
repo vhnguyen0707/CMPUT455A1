@@ -420,7 +420,7 @@ class GoBoard(object):
         blockopen4 = np.array([b_blockopen4, w_blockopen4, b_blockopen4_more, w_blockopen4_more])
         #print("blockopenfour pattern:\n", blockopen4)
 
-        return win, blockwin, open4, blockopen4
+        self.pattern = np.array([win, blockwin, open4, blockopen4])
 
     
     def get_nlines_contain_point(self, point, n_in_row):
