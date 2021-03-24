@@ -44,7 +44,6 @@ class GoBoard(object):
         self.reset(size)
         self.calculate_rows_cols_diags()
         self.generate_pattern()
-        self.get_nlines_contain_point(5,5)
 
     def calculate_rows_cols_diags(self):
         if self.size < 5:
@@ -378,7 +377,7 @@ class GoBoard(object):
     #================ A3 ===================
     def generate_pattern(self):
         # win pattern:
-        b_win = np.array([BLACK,BLACK,BLACK,BLACK,BLACK])
+        b_win = np.array([BLACK,BLACK,BLACK,BLACK,BLACK], dtype=GO_POINT)
         w_win = 3 - b_win
         win = np.array([b_win, w_win])
         #print("win pattern:\n", win)
@@ -388,13 +387,13 @@ class GoBoard(object):
         b_blockwin = np.array([[BLACK,WHITE,WHITE,WHITE,WHITE], [WHITE,BLACK,WHITE,WHITE,WHITE],
                                 [WHITE,WHITE,BLACK,WHITE,WHITE], [WHITE,WHITE,WHITE,BLACK,WHITE],
                                 [WHITE,WHITE,WHITE,WHITE,BLACK]
-                            ])
+                            ], dtype=GO_POINT)
         w_blockwin = 3 - b_blockwin
         blockwin = np.array([b_blockwin, w_blockwin])
         #print("blockwin pattern:\n", blockwin)
 
         # openfour pattern:
-        b_open4 = np.array([EMPTY,BLACK,BLACK,BLACK,BLACK,EMPTY])
+        b_open4 = np.array([EMPTY,BLACK,BLACK,BLACK,BLACK,EMPTY], dtype=GO_POINT)
         w_open4 = 3 - b_open4
         w_open4[w_open4 == 3] = EMPTY
         open4 = np.array([b_open4, w_open4])
@@ -408,8 +407,8 @@ class GoBoard(object):
                                   [BLACK,EMPTY,WHITE,WHITE,WHITE,BLACK], [BLACK,WHITE,WHITE,WHITE,EMPTY,EMPTY],
                                   [EMPTY,EMPTY,WHITE,WHITE,WHITE,BLACK], [BLACK,EMPTY,WHITE,WHITE,WHITE,EMPTY],
                                   [EMPTY,WHITE,WHITE,WHITE,EMPTY,BLACK]
-                                ])
-        b_blockopen4_more = np.array([BLACK,EMPTY,WHITE,WHITE,WHITE,EMPTY,BLACK]) # case: x.ooo.x
+                                ], dtype=GO_POINT)
+        b_blockopen4_more = np.array([BLACK,EMPTY,WHITE,WHITE,WHITE,EMPTY,BLACK], dtype=GO_POINT) # case: x.ooo.x
 
         w_blockopen4 = 3 - b_blockopen4
         w_blockopen4[w_blockopen4 == 3] = EMPTY
@@ -428,9 +427,9 @@ class GoBoard(object):
 
         board2d = GoBoardUtil.get_twoD_board(self)
 
-        # index 1D to 2D
-        r = point // self.size
-        c = point % self.size
+        # index padded 1D to 2D
+        r = point // self.NS - 1
+        c = point % self.NS - 1
         
         # NS:
         N = max(r - n, 0)
@@ -462,8 +461,8 @@ class GoBoard(object):
             diag2.append(board2d[r+i,c-i])
             #print("diag2: ", (r+i,c-i))
 
-        diag1 = np.array(diag1)
-        diag2 = np.array(diag2)
+        diag1 = np.array(diag1, dtype=GO_POINT)
+        diag2 = np.array(diag2, dtype=GO_POINT)
 
         if len(row) < n_in_row:
             row = None
