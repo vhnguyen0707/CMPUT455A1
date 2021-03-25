@@ -355,24 +355,33 @@ class GtpConnection:
         if self.policy_type == "rule_based":
             # get proper policy 
             move_type, move_list = self.board.check_policy_moves()
-            if move_type != "Random":
-                output_moves = []
+            output_moves = []
 
-                for move in move_list:
-                    coord = point_to_coord(move, self.board.size)
-                    string = format_point(coord)
-                    output_moves.append(string)
-                
-                sorted_moves = " ".join(sorted(output_moves))
-                final_output = move_type + " " + sorted_moves
-            else:
-                random_move = self.go_engine.get_move(self.board, self.board.current_player)
-                final_output = "Random" + " " + random_move
+            for move in move_list:
+                coord = point_to_coord(move, self.board.size)
+                string = format_point(coord)
+                output_moves.append(string)
+            
+            sorted_moves = " ".join(sorted(output_moves))
+            final_output = move_type + " " + sorted_moves
 
         # random
         else:
-            random_move = self.go_engine.get_move(self.board, self.board.current_player)
-            final_output = "Random" + " " + random_move
+            # random_move = self.go_engine.get_move(self.board, self.board.current_player)
+            move_list = GoBoardUtil.generate_legal_moves(self.board, self.board.current_player)
+            if not move_list:
+                self.respond()
+                return 
+                
+            output_moves = []
+
+            for move in move_list:
+                coord = point_to_coord(move, self.board.size)
+                string = format_point(coord)
+                output_moves.append(string)
+            
+            sorted_moves = " ".join(sorted(output_moves))
+            final_output = "Random" + " " + sorted_moves
 
         self.respond(final_output)
     # --------------------------------------------------------
