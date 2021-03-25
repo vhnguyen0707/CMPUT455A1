@@ -37,6 +37,8 @@ class GtpConnection:
         self._debug_mode = debug_mode
         self.go_engine = go_engine
         self.board = board
+        # default policy_type is random
+        self.policy_type = "random"
         self.commands = {
             "protocol_version": self.protocol_version_cmd,
             "quit": self.quit_cmd,
@@ -57,7 +59,9 @@ class GtpConnection:
             "gogui-rules_side_to_move": self.gogui_rules_side_to_move_cmd,
             "gogui-rules_board": self.gogui_rules_board_cmd,
             "gogui-rules_final_result": self.gogui_rules_final_result_cmd,
-            "gogui-analyze_commands": self.gogui_analyze_cmd
+            "gogui-analyze_commands": self.gogui_analyze_cmd,
+            "policy": self.policy_cmd,
+            "policy_moves": self.policy_moves_cmd
         }
 
         # used for argument checking
@@ -70,6 +74,7 @@ class GtpConnection:
             "genmove": (1, "Usage: genmove {w,b}"),
             "play": (2, "Usage: play {b,w} MOVE"),
             "legal_moves": (1, "Usage: legal_moves {w,b}"),
+            "policy": (1, 'Usage: policy {random,rule_based}')
         }
 
     def write(self, data):
@@ -337,6 +342,40 @@ class GtpConnection:
                      "pstring/Rules GameID/gogui-rules_game_id\n"
                      "pstring/Show Board/gogui-rules_board\n"
                      )
+
+    # -------------------- A3 -------------------------------
+    def policy_cmd(self, args):
+
+        self.policy_type = args[0]
+        self.respond()
+
+    def policy_moves_cmd(self, args):
+
+        # rulebased
+        if self.policy_type == "rule_based":
+            # get proper policy 
+            move_type, move_list = self.board.check_policy_moves()
+            if move_type != "Random":
+                output_moves = []
+
+                for move in move_list:
+                    coord = point_to_coord(move, self.board.size)
+                    string = format_point(coord)
+                    output_moves.append(string)
+                
+                sorted_moves = " ".join(sorted(output_moves))
+                final_output = move_type + " " + sorted_moves
+            else:
+                random_move = self.go_engine.get_move(self.board, self.board.current_player)
+                final_output = "Random" + " " + random_move
+
+        # random
+        else:
+            random_move = self.go_engine.get_move(self.board, self.board.current_player)
+            final_output = "Random" + " " + random_move
+
+        self.respond(final_output)
+    # --------------------------------------------------------
 
 def point_to_coord(point, boardsize):
     """
