@@ -720,7 +720,7 @@ class GoBoard(object):
 
         else:
             move_type = "Random"
-            move_list = []
+            move_list = legal_moves
             
         return move_type, move_list
 
