@@ -33,7 +33,7 @@ class Gomoku():
         cboard = board.copy()
         emptyPoints = board.get_empty_points()
 
-        if not emptyPoints:
+        if not emptyPoints.size:
             return None
 
         emptyPoints.append(None)
