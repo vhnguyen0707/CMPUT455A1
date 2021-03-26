@@ -486,7 +486,7 @@ class GoBoard(object):
 
     def undo_move(self, move):
         self.board[move] = EMPTY
-        #self.current_player = GoBoardUtil.opponent(self.current_player)
+        self.current_player = GoBoardUtil.opponent(self.current_player)
 
     def check_who_wins(self):
         '''
@@ -519,14 +519,14 @@ class GoBoard(object):
         for move in legal_moves: 
 
             self.play_move(move,self.current_player)
-            self.current_player = GoBoardUtil.opponent(self.current_player)
-            win = self.win(move,win_moves)
+            color = GoBoardUtil.opponent(self.current_player)
+            win = self.win(color,move,win_moves)
             if (not win):
-                block_win = self.block_win(move,block_win_moves,block_win_pattern)
+                block_win = self.block_win(color,move,block_win_moves,block_win_pattern)
                 if (not block_win):
-                    open_four = self.open_four(move,open_four_moves,open_four_pattern)
+                    open_four = self.open_four(color,move,open_four_moves,open_four_pattern)
                     if (not open_four):
-                        block_open_four = self.block_open_four(move,block_open_four_moves,block_open_four_pattern,not_block_open_four_pattern)
+                        block_open_four = self.block_open_four(color,move,block_open_four_moves,block_open_four_pattern,not_block_open_four_pattern)
                         # block_open_four_more = self.block_open_four_more(move,board_copy,block_open_four_moves,block_open_four_pattern, not_block_open_four_pattern)
             self.undo_move(move)
 
@@ -553,18 +553,18 @@ class GoBoard(object):
         return move_type, move_list
 
     # check if win
-    def win(self,move,win_moves):
+    def win(self,color,move,win_moves):
         winner = self.check_who_wins()
-        if self.current_player == winner: 
+        if color == winner: 
             win_moves.append(move)
             return True
         return False
 
     # check if block_win
-    def block_win(self,move,block_win_moves,block_win_pattern):
+    def block_win(self,color,move,block_win_moves,block_win_pattern):
         # get the four (row, col, diag1, diag2) lines after playing the move on board
         lines_list = self.get_nlines_contain_point(move, 5)
-        if self.current_player == BLACK:
+        if color == BLACK:
             current_block_win_pattern = block_win_pattern[0]
         else:
             current_block_win_pattern = block_win_pattern[1]
@@ -585,10 +585,10 @@ class GoBoard(object):
         return False
 
     # check if open_four
-    def open_four(self,move,open_four_moves,open_four_pattern):
+    def open_four(self,color,move,open_four_moves,open_four_pattern):
         # get the four (row, col, diag1, diag2) lines after playing the move on board
         lines_list = self.get_nlines_contain_point(move, 6)
-        if self.current_player == BLACK:
+        if color == BLACK:
             # only one pattern
             current_open_four_pattern = open_four_pattern[0]
         else:
@@ -609,7 +609,7 @@ class GoBoard(object):
         return False
 
     # check if block_open_four
-    def block_open_four(self,move,block_open_four_moves,block_open_four_pattern,not_block_open_four_pattern): 
+    def block_open_four(self,color,move,block_open_four_moves,block_open_four_pattern,not_block_open_four_pattern): 
 
         b_spe1 = np.array([EMPTY,WHITE,WHITE,WHITE,EMPTY,BLACK],dtype=GO_POINT)
         b_spe2 = np.array([BLACK,EMPTY,WHITE,WHITE,WHITE,EMPTY],dtype=GO_POINT)
@@ -620,7 +620,7 @@ class GoBoard(object):
 
         # get the four (row, col, diag1, diag2) lines after playing the move on board
         lines_list = self.get_nlines_contain_point(move, 6)
-        if self.current_player == BLACK:
+        if color == BLACK:
             current_block_open_four_pattern = block_open_four_pattern[0]
         else:
             current_block_open_four_pattern = block_open_four_pattern[1]
@@ -638,7 +638,7 @@ class GoBoard(object):
                                 # special case [EMPTY,WHITE,WHITE,WHITE,EMPTY,BLACK],[BLACK,EMPTY,WHITE,WHITE,WHITE,EMPTY]
                                 if np.allclose(pattern, b_spe1) or np.allclose(pattern, b_spe2) or np.allclose(pattern, w_spe1) or np.allclose(pattern, w_spe2):
                                     if self.size > 6:
-                                        block_open_four_more = self.block_open_four_more(move,block_open_four_moves,block_open_four_pattern,not_block_open_four_pattern)
+                                        block_open_four_more = self.block_open_four_more(color,move,block_open_four_moves,block_open_four_pattern,not_block_open_four_pattern)
                                         if block_open_four_more:
                                             block_open_four_moves.append(move)
                                             return True
@@ -649,9 +649,9 @@ class GoBoard(object):
         return False
 
     # more
-    def block_open_four_more(self,move,block_open_four_moves,block_open_four_pattern,not_block_open_four_pattern):
+    def block_open_four_more(self,color,move,block_open_four_moves,block_open_four_pattern,not_block_open_four_pattern):
         lines_list = self.get_nlines_contain_point(move, 7)
-        if self.current_player == BLACK:
+        if color == BLACK:
             current_block_open_four_pattern = block_open_four_pattern[2]
             current_not_block_open_four_pattern = not_block_open_four_pattern[0]
         else:
