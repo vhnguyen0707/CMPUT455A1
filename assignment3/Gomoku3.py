@@ -30,7 +30,6 @@ class Gomoku():
         """
         Run one-ply MC simulations to get a move to play.
         """
-        cboard = board.copy()
         emptyPoints = board.get_empty_points()
 
         if not emptyPoints.size:
@@ -41,6 +40,7 @@ class Gomoku():
 
         for point in emptyPoints:
             if board.is_legal(point, color):
+                cboard = board.copy()
                 wins = self.simulateMove(cboard, point, color)
                 moveWins.append(wins)
 
@@ -63,23 +63,23 @@ class Gomoku():
         """
         Run a simulated game for a given move
         """
-        cboard = board.copy()
-        cboard.play_move(move, toPlay)
+        board.play_move(move, toPlay)
         opp = GoBoardUtil.opponent(toPlay)
         passes = 0
-        while cboard.detect_five_in_a_row() == EMPTY and len(cboard.get_empty_points()) != 0:
-            color = cboard.current_player
-            #move = GoBoardUtil.generate_random_move(board, color)
-            pattern, moves = cboard.check_policy_moves()
+       
+        while board.detect_five_in_a_row() == EMPTY and len(board.get_empty_points()) != 0:
+            color = board.current_player
+            pattern, moves = board.check_policy_moves()
             move = random.choice(moves)
-            cboard.play_move(move, color)
+            board.play_move(move, color)
+            
             if move == PASS:
                 passes += 1
             else:
                 passes = 0
             if passes >= 2:
                 break
-        return cboard.detect_five_in_a_row()
+        return board.detect_five_in_a_row()
 
 
 def run():
