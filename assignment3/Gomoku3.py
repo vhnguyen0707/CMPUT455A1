@@ -71,8 +71,6 @@ class Gomoku():
             color = cboard.current_player
             #move = GoBoardUtil.generate_random_move(board, color)
             pattern, moves = cboard.check_policy_moves()
-            
-            print(GoBoardUtil.get_twoD_board(cboard))
             move = random.choice(moves)
             cboard.play_move(move, color)
             if move == PASS:
