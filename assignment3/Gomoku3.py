@@ -6,7 +6,7 @@ from gtp_connection import GtpConnection
 from board_util import GoBoardUtil
 from board import GoBoard
 import numpy as np
-
+import random
 
 class Gomoku():
     def __init__(self):
@@ -69,7 +69,9 @@ class Gomoku():
         passes = 0
         while board.detect_five_in_a_row() != EMPTY or len(board.get_empty_points()) != 0:
             color = board.current_player
-            move = GoBoardUtil.generate_random_move(board, color)
+            #move = GoBoardUtil.generate_random_move(board, color)
+            pattern, moves = board.check_policy_moves()
+            move = random.choice(moves)
             board.play_move(move, color)
             if mover == PASS:
                 passes += 1
@@ -78,11 +80,6 @@ class Gomoku():
             if passes >= 2:
                 break
         return board.detect_five_in_a_row()
-
-
-
-                
-        
 
 
 def run():
