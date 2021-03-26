@@ -486,7 +486,7 @@ class GoBoard(object):
 
     def undo_move(self, move):
         self.board[move] = EMPTY
-        # self.current_player = GoBoardUtil.opponent(self.current_player)
+        #self.current_player = GoBoardUtil.opponent(self.current_player)
 
     def check_who_wins(self):
         '''
@@ -518,17 +518,18 @@ class GoBoard(object):
         # check if moves will be one of the lists above
         for move in legal_moves: 
 
-            board_copy = self.copy()
-            board_copy.play_move(move,self.current_player)
-            win = self.win(move,board_copy,win_moves)
+            self.play_move(move,self.current_player)
+            self.current_player = GoBoardUtil.opponent(self.current_player)
+            win = self.win(move,win_moves)
             if (not win):
-                block_win = self.block_win(move,board_copy,block_win_moves,block_win_pattern)
+                block_win = self.block_win(move,block_win_moves,block_win_pattern)
                 if (not block_win):
-                    open_four = self.open_four(move,board_copy,open_four_moves,open_four_pattern)
+                    open_four = self.open_four(move,open_four_moves,open_four_pattern)
                     if (not open_four):
-                        block_open_four = self.block_open_four(move,board_copy,block_open_four_moves,block_open_four_pattern,not_block_open_four_pattern)
+                        block_open_four = self.block_open_four(move,block_open_four_moves,block_open_four_pattern,not_block_open_four_pattern)
                         # block_open_four_more = self.block_open_four_more(move,board_copy,block_open_four_moves,block_open_four_pattern, not_block_open_four_pattern)
-        
+            self.undo_move(move)
+
         if win_moves:
             move_type = "Win"
             move_list = win_moves
@@ -552,83 +553,64 @@ class GoBoard(object):
         return move_type, move_list
 
     # check if win
-    def win(self,move,board_copy,win_moves):
-        winner = board_copy.check_who_wins()
+    def win(self,move,win_moves):
+        winner = self.check_who_wins()
         if self.current_player == winner: 
             win_moves.append(move)
             return True
         return False
 
     # check if block_win
-    def block_win(self,move,board_copy,block_win_moves,block_win_pattern):
+    def block_win(self,move,block_win_moves,block_win_pattern):
         # get the four (row, col, diag1, diag2) lines after playing the move on board
-        lines_list = board_copy.get_nlines_contain_point(move, 5)
+        lines_list = self.get_nlines_contain_point(move, 5)
         if self.current_player == BLACK:
-            b_block_win_pattern = block_win_pattern[0]
-            for pattern in b_block_win_pattern: 
-                # for each row, col, diag1, diag2
-                for line in lines_list:
-                    # if line matches the one of the pattern, then block_win is True
-                    if line.size:
-                        for i in range(0, len(line) - 5 + 1):
-                            part_line = line[i:i+5] 
-                            '''print("block_win")
-                            print(line)
-                            print(part_line)
-                            print(pattern)'''
-                            if np.allclose(part_line, pattern):
-                                block_win_moves.append(move)
-                                return True     
+            current_block_win_pattern = block_win_pattern[0]
         else:
-            w_block_win_pattern = block_win_pattern[1]
-            for pattern in w_block_win_pattern: 
-                # for each row, col, diag1, diag2
-                for line in lines_list:
-                    # if line matches the one of the pattern, then block_win is True
-                    if line.size:
-                        for i in range(0, len(line) - 5 + 1):
-                            part_line = line[i:i+5] 
-                            if np.allclose(part_line, pattern):
-                                block_win_moves.append(move)
-                                return True 
-        return False
-
-    # check if open_four
-    def open_four(self,move,board_copy,open_four_moves,open_four_pattern):
-        # get the four (row, col, diag1, diag2) lines after playing the move on board
-        lines_list = board_copy.get_nlines_contain_point(move, 6)
-        if self.current_player == BLACK:
-            # only one pattern
-            b_open_four_pattern = open_four_pattern[0]
+            current_block_win_pattern = block_win_pattern[1]
+        for pattern in current_block_win_pattern: 
             # for each row, col, diag1, diag2
             for line in lines_list:
                 # if line matches the one of the pattern, then block_win is True
                 if line.size:
-                    for i in range(0, len(line) - 6 + 1):
-                        part_line = line[i:i+6] 
-                        '''print("open_four")
+                    for i in range(0, len(line) - 5 + 1):
+                        part_line = line[i:i+5] 
+                        '''print("block_win")
                         print(line)
                         print(part_line)
-                        print(b_open_four_pattern)'''
-                        if np.allclose(part_line, b_open_four_pattern):
-                            open_four_moves.append(move)
-                            return True
-                        
+                        print(pattern)'''
+                        if np.allclose(part_line, pattern):
+                            block_win_moves.append(move)
+                            return True     
+        return False
+
+    # check if open_four
+    def open_four(self,move,open_four_moves,open_four_pattern):
+        # get the four (row, col, diag1, diag2) lines after playing the move on board
+        lines_list = self.get_nlines_contain_point(move, 6)
+        if self.current_player == BLACK:
+            # only one pattern
+            current_open_four_pattern = open_four_pattern[0]
         else:
-            w_open_four_pattern = open_four_pattern[1]
-            for line in lines_list:
-                # if line matches the one of the pattern, then block_win is True
-                if line.size:
-                    for i in range(0, len(line) - 6 + 1):
-                        part_line = line[i:i+6] 
-                        if np.allclose(part_line, w_open_four_pattern):
-                            open_four_moves.append(move)
-                            return True
+            current_open_four_pattern = open_four_pattern[1]
+            # for each row, col, diag1, diag2
+        for line in lines_list:
+            # if line matches the one of the pattern, then block_win is True
+            if line.size:
+                for i in range(0, len(line) - 6 + 1):
+                    part_line = line[i:i+6] 
+                    '''print("open_four")
+                    print(line)
+                    print(part_line)
+                    print(b_open_four_pattern)'''
+                    if np.allclose(part_line, current_open_four_pattern):
+                        open_four_moves.append(move)
+                        return True
         return False
 
     # check if block_open_four
-    def block_open_four(self,move,board_copy,block_open_four_moves,block_open_four_pattern,not_block_open_four_pattern): 
-        
+    def block_open_four(self,move,block_open_four_moves,block_open_four_pattern,not_block_open_four_pattern): 
+
         b_spe1 = np.array([EMPTY,WHITE,WHITE,WHITE,EMPTY,BLACK],dtype=GO_POINT)
         b_spe2 = np.array([BLACK,EMPTY,WHITE,WHITE,WHITE,EMPTY],dtype=GO_POINT)
         w_spe1 = 3 - b_spe1
@@ -637,10 +619,12 @@ class GoBoard(object):
         w_spe2[w_spe2 == 3] = EMPTY
 
         # get the four (row, col, diag1, diag2) lines after playing the move on board
-        lines_list = board_copy.get_nlines_contain_point(move, 6)
+        lines_list = self.get_nlines_contain_point(move, 6)
         if self.current_player == BLACK:
-            b_block_open_four_pattern = block_open_four_pattern[0]
-            for pattern in b_block_open_four_pattern: 
+            current_block_open_four_pattern = block_open_four_pattern[0]
+        else:
+            current_block_open_four_pattern = block_open_four_pattern[1]
+            for pattern in current_block_open_four_pattern: 
                 # for each row, col, diag1, diag2
                 for line in lines_list:
                     # if line matches the one of the pattern, then block_win is True
@@ -652,32 +636,9 @@ class GoBoard(object):
                             print(pattern)'''
                             if np.allclose(part_line, pattern):
                                 # special case [EMPTY,WHITE,WHITE,WHITE,EMPTY,BLACK],[BLACK,EMPTY,WHITE,WHITE,WHITE,EMPTY]
-                                if np.allclose(pattern, b_spe1) or np.allclose(pattern, b_spe2):
+                                if np.allclose(pattern, b_spe1) or np.allclose(pattern, b_spe2) or np.allclose(pattern, w_spe1) or np.allclose(pattern, w_spe2):
                                     if self.size > 6:
-                                        block_open_four_more = self.block_open_four_more(move,board_copy,block_open_four_moves,block_open_four_pattern,not_block_open_four_pattern)
-                                        if block_open_four_more:
-                                            block_open_four_moves.append(move)
-                                            return True
-                                        else:
-                                            return False
-                                block_open_four_moves.append(move)
-                                return True
-        else:
-            w_block_open_four_pattern = block_open_four_pattern[1]
-            for pattern in w_block_open_four_pattern: 
-                # for each row, col, diag1, diag2
-                for line in lines_list:
-                    # if line matches the one of the pattern, then block_win is True
-                    if line.size:
-                        for i in range(0, len(line) - 6 + 1):
-                            part_line = line[i:i+6] 
-                            '''print("block_open_four")
-                            print(part_line)
-                            print(pattern)'''
-                            if np.allclose(part_line, pattern):
-                                if np.allclose(pattern, w_spe1) or np.allclose(pattern, w_spe2):
-                                    if self.size > 6:
-                                        block_open_four_more = self.block_open_four_more(move,board_copy,block_open_four_moves,block_open_four_pattern,not_block_open_four_pattern)
+                                        block_open_four_more = self.block_open_four_more(move,block_open_four_moves,block_open_four_pattern,not_block_open_four_pattern)
                                         if block_open_four_more:
                                             block_open_four_moves.append(move)
                                             return True
@@ -688,43 +649,29 @@ class GoBoard(object):
         return False
 
     # more
-    def block_open_four_more(self,move,board_copy,block_open_four_moves,block_open_four_pattern,not_block_open_four_pattern):
-        lines_list = board_copy.get_nlines_contain_point(move, 7)
+    def block_open_four_more(self,move,block_open_four_moves,block_open_four_pattern,not_block_open_four_pattern):
+        lines_list = self.get_nlines_contain_point(move, 7)
         if self.current_player == BLACK:
-            b_block_open_four_pattern = block_open_four_pattern[2]
-            # for each row, col, diag1, diag2
-            for line in lines_list:
-                # if line matches the one of the pattern, then block_win is True
-                if line.size:
-                    for i in range(0, len(line) - 7 + 1):
-                        part_line = line[i:i+7] 
-                        if np.allclose(part_line, b_block_open_four_pattern):
-                            block_open_four_moves.append(move)
-                            return True
-                        else:
-                            b_not_block_open_four_pattern = not_block_open_four_pattern[0]
-                            for pattern in b_not_block_open_four_pattern: 
-                                if np.allclose(part_line, pattern):
-                                    return False
+            current_block_open_four_pattern = block_open_four_pattern[2]
+            current_not_block_open_four_pattern = not_block_open_four_pattern[0]
         else:
-            w_block_open_four_pattern = block_open_four_pattern[3]
-            # for each row, col, diag1, diag2
-            for line in lines_list:
-                # if line matches the one of the pattern, then block_win is True
-                if line.size:
-                    for i in range(0, len(line) - 7 + 1):
-                        part_line = line[i:i+7] 
-                        '''print("block_open_four_more")
-                        print(part_line)
-                        print(w_block_open_four_pattern)'''
-                        if np.allclose(part_line, w_block_open_four_pattern):
-                            block_open_four_moves.append(move)
-                            return True
-                        else:
-                            w_not_block_open_four_pattern = not_block_open_four_pattern[1]
-                            for pattern in w_not_block_open_four_pattern: 
-                                if np.allclose(part_line, pattern):
-                                    return False
+            current_block_open_four_pattern = block_open_four_pattern[3]
+            current_not_block_open_four_pattern = not_block_open_four_pattern[1]
+        # for each row, col, diag1, diag2
+        for line in lines_list:
+            # if line matches the one of the pattern, then block_win is True
+            if line.size:
+                for i in range(0, len(line) - 7 + 1):
+                    part_line = line[i:i+7] 
+                    '''print(part_line)
+                    print(block_open_four_pattern)'''
+                    if np.allclose(part_line, current_block_open_four_pattern):
+                        block_open_four_moves.append(move)
+                        return True
+                    else:
+                        for pattern in current_not_block_open_four_pattern: 
+                            if np.allclose(part_line, pattern):
+                                return False
         return True
 
         
