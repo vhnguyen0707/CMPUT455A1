@@ -3,7 +3,7 @@
 # Set the path to your python3 above
 
 from gtp_connection import GtpConnection
-from board_util import GoBoardUtil
+from board_util import GoBoardUtil, EMPTY, PASS
 from board import GoBoard
 import numpy as np
 import random
@@ -36,7 +36,7 @@ class Gomoku():
         if not emptyPoints.size:
             return None
 
-        emptyPoints.append(None)
+        #emptyPoints.append(None)
         moveWins = [] 
 
         for point in emptyPoints:
@@ -67,19 +67,21 @@ class Gomoku():
         cboard.play_move(move, toPlay)
         opp = GoBoardUtil.opponent(toPlay)
         passes = 0
-        while board.detect_five_in_a_row() != EMPTY or len(board.get_empty_points()) != 0:
-            color = board.current_player
+        while cboard.detect_five_in_a_row() == EMPTY and len(cboard.get_empty_points()) != 0:
+            color = cboard.current_player
             #move = GoBoardUtil.generate_random_move(board, color)
-            pattern, moves = board.check_policy_moves()
+            pattern, moves = cboard.check_policy_moves()
+            
+            print(GoBoardUtil.get_twoD_board(cboard))
             move = random.choice(moves)
-            board.play_move(move, color)
-            if mover == PASS:
+            cboard.play_move(move, color)
+            if move == PASS:
                 passes += 1
             else:
                 passes = 0
             if passes >= 2:
                 break
-        return board.detect_five_in_a_row()
+        return cboard.detect_five_in_a_row()
 
 
 def run():
