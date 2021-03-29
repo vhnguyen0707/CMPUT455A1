@@ -549,7 +549,6 @@ class GoBoard(object):
                         return True
         return False
 
-
     # check if block_open_four
     def block_open_four(self,lines,color,move,block_open_four_moves): 
         for pattern in self.blockopen4[color-1]: 
