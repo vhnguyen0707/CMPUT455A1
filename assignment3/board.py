@@ -525,10 +525,12 @@ class GoBoard(object):
             win = self.win(lines_5,color,move,win_moves)
             if (not win):
                 block_win = self.block_win(lines_5,color,move,block_win_moves)
+                #print("block win: ", block_win)
                 if (not block_win):
                     open_four = self.open_four(lines_6,color,move,open_four_moves)
                     if (not open_four):
                         block_open_four = self.block_open_four(color,move,block_open_four_moves,block_open_four_pattern,not_block_open_four_pattern)
+                        #print("block open4: ", block_open_four)
                         # block_open_four_more = self.block_open_four_more(move,board_copy,block_open_four_moves,block_open_four_pattern, not_block_open_four_pattern)
             self.undo_move(move)
 
@@ -543,11 +545,11 @@ class GoBoard(object):
         elif open_four_moves:
             move_type = "OpenFour"
             move_list = open_four_moves
-
+        
         elif block_open_four_moves:
             move_type = "BlockOpenFour"
             move_list = block_open_four_moves
-
+    
         else:
             move_type = "Random"
             move_list = legal_moves
@@ -606,28 +608,28 @@ class GoBoard(object):
             current_block_open_four_pattern = block_open_four_pattern[0]
         else:
             current_block_open_four_pattern = block_open_four_pattern[1]
-            for pattern in current_block_open_four_pattern: 
-                # for each row, col, diag1, diag2
-                for line in lines_list:
-                    # if line matches the one of the pattern, then block_win is True
-                    if line.size:
-                        for i in range(0, len(line) - 6 + 1):
-                            part_line = line[i:i+6] 
-                            '''print("block_open_four")
-                            print(part_line)
-                            print(pattern)'''
-                            if np.allclose(part_line, pattern):
-                                # special case [EMPTY,WHITE,WHITE,WHITE,EMPTY,BLACK],[BLACK,EMPTY,WHITE,WHITE,WHITE,EMPTY]
-                                if np.allclose(pattern, b_spe1) or np.allclose(pattern, b_spe2) or np.allclose(pattern, w_spe1) or np.allclose(pattern, w_spe2):
-                                    if self.size > 6:
-                                        block_open_four_more = self.block_open_four_more(color,move,block_open_four_moves,block_open_four_pattern,not_block_open_four_pattern)
-                                        if block_open_four_more:
-                                            block_open_four_moves.append(move)
-                                            return True
-                                        else:
-                                            return False
-                                block_open_four_moves.append(move)
-                                return True
+        for pattern in current_block_open_four_pattern: 
+            # for each row, col, diag1, diag2
+            for line in lines_list:
+                # if line matches the one of the pattern, then block_win is True
+                if line.size:
+                    for i in range(0, len(line) - 6 + 1):
+                        part_line = line[i:i+6] 
+                        '''print("block_open_four")
+                        print(part_line)
+                        print(pattern)'''
+                        if np.allclose(part_line, pattern):
+                            # special case [EMPTY,WHITE,WHITE,WHITE,EMPTY,BLACK],[BLACK,EMPTY,WHITE,WHITE,WHITE,EMPTY]
+                            if np.allclose(pattern, b_spe1) or np.allclose(pattern, b_spe2) or np.allclose(pattern, w_spe1) or np.allclose(pattern, w_spe2):
+                                if self.size > 6:
+                                    block_open_four_more = self.block_open_four_more(color,move,block_open_four_moves,block_open_four_pattern,not_block_open_four_pattern)
+                                    if block_open_four_more:
+                                        block_open_four_moves.append(move)
+                                        return True
+                                    else:
+                                        return False
+                            block_open_four_moves.append(move)
+                            return True
         return False
 
     # more

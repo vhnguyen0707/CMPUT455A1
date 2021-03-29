@@ -30,23 +30,17 @@ class Gomoku():
         """
         Run one-ply MC simulations to get a move to play.
         """
-        emptyPoints = board.get_empty_points()
-
-        if not emptyPoints.size:
-            return None
-
-        #emptyPoints.append(None)
         moveWins = [] 
 
-        for point in emptyPoints:
-            if board.is_legal(point, color):
-                cboard = board.copy()
-                wins = self.simulateMove(cboard, point, color)
-                moveWins.append(wins)
+        _, rule_based_moves = board.check_policy_moves()
+        for move in rule_based_moves:
+            cboard = board.copy()
+            wins = self.simulateMove(cboard, move, color)
+            moveWins.append(wins)
 
         #Select best move
         max_child = np.argmax(moveWins)
-        return emptyPoints[max_child]
+        return rule_based_moves[max_child]
 
     def simulateMove(self, board, move, toPlay):
         """
@@ -69,7 +63,7 @@ class Gomoku():
        
         while board.detect_five_in_a_row() == EMPTY and len(board.get_empty_points()) != 0:
             color = board.current_player
-            pattern, moves = board.check_policy_moves()
+            _, moves = board.check_policy_moves()
             move = random.choice(moves)
             board.play_move(move, color)
             
