@@ -26,34 +26,41 @@ class Gomoku():
         self.numSimulations = 10
 
 
-    def get_move(self, board, color):
+    def get_move(self, board, color, policy_type):
         """
         Run one-ply MC simulations to get a move to play.
         """
+        if policy_type == "rule_based":
+            _, moves = board.check_policy_moves()
+        else:
+            moves = board.get_empty_points()
+        
+        if len(moves) < 1:
+            return None
+
         moveWins = [] 
 
-        _, rule_based_moves = board.check_policy_moves()
-        for move in rule_based_moves:
+        for move in moves:
             cboard = board.copy()
-            wins = self.simulateMove(cboard, move, color)
+            wins = self.simulateMove(cboard, move, color, policy_type)
             moveWins.append(wins)
 
         #Select best move
         max_child = np.argmax(moveWins)
-        return rule_based_moves[max_child]
+        return moves[max_child]
 
-    def simulateMove(self, board, move, toPlay):
+    def simulateMove(self, board, move, toPlay, policy_type):
         """
         Run simulations for a given move
         """
         wins = 0
         for _ in range(self.numSimulations):
-            result = self.simulate(board, move, toPlay)
+            result = self.simulate(board, move, toPlay, policy_type)
             if result == toPlay:
                 wins += 1
         return wins
 
-    def simulate(self, board, move, toPlay):
+    def simulate(self, board, move, toPlay, policy_type):
         """
         Run a simulated game for a given move
         """
@@ -63,7 +70,10 @@ class Gomoku():
        
         while board.detect_five_in_a_row() == EMPTY and len(board.get_empty_points()) != 0:
             color = board.current_player
-            _, moves = board.check_policy_moves()
+            if policy_type == "rule_based":
+                _, moves = board.check_policy_moves()
+            else:
+                moves = board.get_empty_points()
             move = random.choice(moves)
             board.play_move(move, color)
             
