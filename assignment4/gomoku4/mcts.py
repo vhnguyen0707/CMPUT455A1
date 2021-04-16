@@ -137,17 +137,14 @@ class MCTS(object):
     def _evaluate_rollout(self, board, toplay):
 
         rollouts = []
-        legal_moves = GoBoardUtil.generate_legal_moves_gomoku(board)
-        is_done = game_done(board)
+        winner = game_done(board)
 
-        while is_done is None:
-            for move in legal_moves:
-                board.play_move_gomoku(move, board.current_player)
-                rollouts.append(move)
-                is_done = game_done(board)
-                if is_done:
-                    break
-        
+        while winner is EMPTY and len(board.get_empty_points()) != 0:
+            move = GoBoardUtil.generate_random_move(board, board.current_player)
+            board.play_move_gomoku(move, board.current_player)
+            rollouts.append(move)
+            winner = game_done(board)
+            
         for move in rollouts[::-1]:
             board.board[move] = EMPTY
             board.current_player = GoBoardUtil.opponent(board.current_player)
@@ -160,9 +157,11 @@ class MCTS(object):
 
     def game_done(board):
         game_end, winner = board.check_game_end_gomoku()
-        if not game_end and len(board.get_empty_points()) != 0:
-            return None
-        return True
+        if game_end:
+            return winner
+        if len(board.get_empty_points()) == 0:
+            return 'draw'
+        return EMPTY
 
     def get_move(
         self,
