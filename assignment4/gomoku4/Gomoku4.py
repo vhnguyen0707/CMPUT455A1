@@ -46,7 +46,7 @@ class GomokuSimulationPlayer(object):
             board,
             toplay,
             num_simulation=self.num_simulation,
-            exploration=self.exploration,
+            exploration=self.exploration
         )
         self.update(move)
         return move
