@@ -68,7 +68,7 @@ def run(sim):
     """
     board = GoBoard(7)
     con = GtpConnection(
-        Go5(num_sim), board
+        GomokuSimulationPlayer(num_sim), board
     )
     con.start_connection()
 
