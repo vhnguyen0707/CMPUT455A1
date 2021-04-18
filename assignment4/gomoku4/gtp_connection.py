@@ -285,7 +285,7 @@ class GtpConnection():
         self.respond('')
 
     def handler(self, signum, fram):
-        self.board = self.sboard
+        #self.board = self.sboard
         raise Exception("unknown")
 
     def solve_cmd(self, args):
@@ -323,7 +323,9 @@ class GtpConnection():
         if board_is_full:
             self.respond("pass")
             return
+        '''
         move=None
+    
         try:
             signal.alarm(int(self.timelimit))
             self.sboard = self.board.copy()
@@ -332,8 +334,11 @@ class GtpConnection():
             signal.alarm(0)
         except Exception as e:
             move=self.go_engine.best_move
+        '''
+        move = self.go_engine.get_move(self.board, color)
 
         if move == PASS:
+            #print("check")
             self.respond("pass")
             return
         move_coord = point_to_coord(move, self.board.size)

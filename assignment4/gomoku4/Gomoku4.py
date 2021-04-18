@@ -9,6 +9,8 @@ from simple_board import SimpleGoBoard
 import random
 import numpy as np
 
+from mcts import MCTS
+'''
 def undo(board,move):
     board.board[move]=EMPTY
     board.current_player=GoBoardUtil.opponent(board.current_player)
@@ -26,26 +28,26 @@ def game_result(board):
     if board_full:
         return 'draw'
     return None
-
+'''
 class GomokuSimulationPlayer(object):
     """
     For each move do `n_simualtions_per_move` playouts,
     then select the one with best win-rate.
     playout could be either random or rule_based (i.e., uses pre-defined patterns) 
     """
-    def __init__(self, n_simualtions_per_move=10, playout_policy='random', board_size=7):
-        assert(playout_policy in ['random', 'rule_based'])
-        self.n_simualtions_per_move=n_simualtions_per_move
+    def __init__(self, board_size=7):
+        #assert(playout_policy in ['random', 'rule_based'])
+        #self.n_simualtions_per_move=n_simualtions_per_move
         self.board_size=board_size
-        self.playout_policy=playout_policy
+        #self.playout_policy=playout_policy
 
         #NOTE: pattern has preference, later pattern is ignored if an earlier pattern is found
         self.pattern_list=['Win', 'BlockWin', 'OpenFour', 'BlockOpenFour', 'Random']
 
-        self.name="Gomoku3"
-        self.version = 3.0
-        self.best_move=None
+        self.name="Gomoku4"
+        self.version = 4.0
     
+    '''
     def set_playout_policy(self, playout_policy='random'):
         assert(playout_policy in ['random', 'rule_based'])
         self.playout_policy=playout_policy
@@ -83,11 +85,12 @@ class GomokuSimulationPlayer(object):
         else:
             assert(res == GoBoardUtil.opponent(color_to_play))
             return -1.0
-
+    '''
     def get_move(self, board, color_to_play):
         """
         The genmove function called by gtp_connection
         """
+        '''
         moves=GoBoardUtil.generate_legal_moves_gomoku(board)
         toplay=board.current_player
         best_result, best_move=-1.1, None
@@ -114,6 +117,10 @@ class GomokuSimulationPlayer(object):
                 undo(board, move)
         assert(best_move is not None)
         return best_move
+        '''
+        mcts = MCTS()
+
+        return mcts.get_move(board, color_to_play, 2)
 
 def run():
     """
