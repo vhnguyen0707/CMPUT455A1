@@ -1,7 +1,7 @@
 import os, sys
 import numpy as np
 
-from board_util import GoBoardUtil, BLACK, WHITE, PASS
+from board_util import GoBoardUtil, BLACK, WHITE, PASS, EMPTY
 #from feature_moves import FeatureMoves
 from gtp_connection import point_to_coord, format_point
 
@@ -137,13 +137,14 @@ class MCTS(object):
     def _evaluate_rollout(self, board, toplay):
 
         rollouts = []
-        winner = game_done(board)
+        winner = get_result(board)
+        legal_moves = GoBoardUtil.generate_legal_moves_gomoku(board)
 
-        while winner is EMPTY and len(board.get_empty_points()) != 0:
-            move = GoBoardUtil.generate_random_move(board, board.current_player)
-            board.play_move_gomoku(move, board.current_player)
-            rollouts.append(move)
-            winner = game_done(board)
+        while winner is None and len(board.get_empty_points()) > 0:
+            for move in legal_moves:
+                board.play_move_gomoku(move, board.current_player)
+                rollouts.append(move)
+                winner = get_result(board)
             
         for move in rollouts[::-1]:
             board.board[move] = EMPTY
@@ -155,13 +156,13 @@ class MCTS(object):
         else:
             return 0
 
-    def game_done(board):
+    def get_result(board):
         game_end, winner = board.check_game_end_gomoku()
         if game_end:
             return winner
         if len(board.get_empty_points()) == 0:
             return 'draw'
-        return EMPTY
+        return None
 
     def get_move(
         self,
