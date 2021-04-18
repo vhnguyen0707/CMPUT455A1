@@ -62,13 +62,13 @@ class GomokuSimulationPlayer(object):
         return dict(version=self.version, name=self.__class__.__name__,)
 
 
-def run(sim, sim_rule, move_filter, in_tree_knowledge):
+def run(sim):
     """
     Start the gtp connection and wait for commands.
     """
     board = GoBoard(7)
-    con = GtpConnectionGo3(
-        Go5(num_sim, sim_rule, move_filter, in_tree_knowledge), board
+    con = GtpConnection(
+        Go5(num_sim), board
     )
     con.start_connection()
 
