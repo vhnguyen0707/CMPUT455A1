@@ -138,10 +138,13 @@ class MCTS(object):
 
         rollouts = []
         winner = get_result(board)
-        legal_moves = GoBoardUtil.generate_legal_moves_gomoku(board)
-
+        pattern = board.get_pattern_moves()
+        if pattern is None:
+            moves = board.get_empty_points()
+        else:
+            _, moves = pattern
         while winner is None and len(board.get_empty_points()) > 0:
-            for move in legal_moves:
+            for move in moves:
                 board.play_move_gomoku(move, board.current_player)
                 rollouts.append(move)
                 winner = get_result(board)
