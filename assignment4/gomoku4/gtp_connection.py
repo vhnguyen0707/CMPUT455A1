@@ -309,7 +309,7 @@ class GtpConnection():
         """
         Generate a move for the color args[0] in {'b', 'w'}, for the game of gomoku.
         """
-        board_color = args[0].lower()
+        '''board_color = args[0].lower()
         color = color_to_int(board_color)
         game_end, winner = self.board.check_game_end_gomoku()
         if game_end:
@@ -342,7 +342,19 @@ class GtpConnection():
             self.board.play_move_gomoku(move, color)
             self.respond(move_as_string)
         else:
-            self.respond("illegal move: {}".format(move_as_string))
+            self.respond("illegal move: {}".format(move_as_string))'''
+        
+        """ generate a move for color args[0] in {'b','w'} """
+        board_color = args[0].lower()
+        color = color_to_int(board_color)
+        move = self.go_engine.get_move(self.board, color)
+        move_coord = point_to_coord(move, self.board.size)
+        move_as_string = format_point(move_coord)
+        if self.board.is_legal(move, color):
+            self.board.play_move(move, color)
+            self.respond(move_as_string)
+        else:
+            self.respond("Illegal move: {}".format(move_as_string))
 
     def gogui_rules_game_id_cmd(self, args):
         self.respond("Gomoku")
