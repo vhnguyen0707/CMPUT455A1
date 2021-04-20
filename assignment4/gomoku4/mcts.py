@@ -2,7 +2,6 @@ import os, sys
 import numpy as np
 
 from board_util import GoBoardUtil, BLACK, WHITE, PASS, EMPTY
-#from feature_moves import FeatureMoves
 from gtp_connection import point_to_coord, format_point
 
 import signal
@@ -13,7 +12,7 @@ def handler(signum, frame):
 
 signal.signal(signal.SIGALRM, handler)
 
-PASS = "pass"
+#PASS = "pass"
 TIMELIMIT = 60
 
 def filtered_moves(board):
@@ -21,7 +20,6 @@ def filtered_moves(board):
     if pattern is None:
         moves = board.get_empty_points()
         np.random.shuffle(moves)
-        #print(moves)
         return moves
     else:
         return pattern[1]
@@ -65,12 +63,9 @@ class TreeNode(object):
         Expands tree by creating new children.
         """
         moves = filtered_moves(board)
-        #print(moves)
         for move in moves:
             self._children[move] = TreeNode(self)
             self._children[move]._move = move
-        #self._children[PASS] = TreeNode(self)
-        #self._children[PASS]._move = PASS
         self._expanded = True
 
     def select(self, exploration, max_flag):
@@ -134,10 +129,6 @@ class MCTS(object):
         while not node.is_leaf():
             max_flag = color == BLACK
             move, next_node = node.select(self.exploration, max_flag)
-            # if move != PASS:
-            #     assert board.is_legal(move, color)
-            # if move == PASS:
-            #     move = None
             
             board.play_move_gomoku(move, color)
             color = GoBoardUtil.opponent(color)
@@ -153,19 +144,13 @@ class MCTS(object):
 
     def _evaluate_rollout(self, board, toplay):
         print("simulation")
-        #rollouts = []
         winner = self.get_result(board)
 
         while winner is None and len(board.get_empty_points()) > 0:
             legal_moves = filtered_moves(board)
             move = random.choice(legal_moves)
             board.play_move_gomoku(move, board.current_player)
-            #rollouts.append(move)
             winner = self.get_result(board)
-        
-        # undo: 
-        #board.board[move] = EMPTY
-        #board.current_player = GoBoardUtil.opponent(board.current_player)
         
         print("winner: ", winner)
         if winner == BLACK:
@@ -175,7 +160,7 @@ class MCTS(object):
         else:
             return 0
 
-    def get_result(self,board):
+    def get_result(self, board):
         game_end, winner = board.check_game_end_gomoku()
         if game_end:
             return winner
@@ -188,20 +173,15 @@ class MCTS(object):
         board,
         toplay,
         exploration,
-    ):
-        #print("acesss")
-        
-        signal.alarm(59)
+    ):  
+        signal.alarm(TIMELIMIT - 1)
 
         try: 
             if self.toplay != toplay:
-                #sys.stderr.write("Dumping the subtree! \n")
-                #sys.stderr.flush()
                 self._root = TreeNode(None)
             self.toplay = toplay
             self.exploration = exploration
             while True:
-            #for i in range(5):
                 board_copy = board.copy()
                 self._playout(board_copy, toplay)
             signal.alarm(0)
@@ -210,16 +190,11 @@ class MCTS(object):
             moves_ls = [
                 (move, node._n_visits) for move, node in self._root._children.items()
             ]
-            # if not moves_ls:
-            #     return None
+
             moves_ls = sorted(moves_ls, key=lambda i: i[1], reverse=True)
             print(moves_ls)
             move = moves_ls[0]
-            #self.print_stat(board, self._root, toplay)
-            
-            # if move[0] == PASS:
-            #     return None
-            #assert board.is_legal(move[0], toplay)
+        
             return move[0]
 
     def update_with_move(self, last_move):
