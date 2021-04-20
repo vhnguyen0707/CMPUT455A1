@@ -2,7 +2,8 @@ import os, sys
 import numpy as np
 
 from board_util import GoBoardUtil, BLACK, WHITE, PASS, EMPTY
-from gtp_connection import point_to_coord, format_point
+#from gtp_connection import point_to_coord, format_point
+from alphabeta import solve as alphabeta_solver
 
 import signal
 import random
@@ -155,7 +156,8 @@ class MCTS(object):
         print("winner: ", winner)
         if winner == BLACK:
             return 1
-        elif winner == EMPTY:
+        elif winner == 'draw':
+            #print("acess draw")
             return 0.5
         else:
             return 0
