@@ -3,7 +3,6 @@ import numpy as np
 
 from board_util import GoBoardUtil, BLACK, WHITE, PASS, EMPTY
 #from gtp_connection import point_to_coord, format_point
-from alphabeta import solve as alphabeta_solver
 
 import signal
 import random
@@ -123,7 +122,7 @@ class MCTS(object):
         self.toplay = BLACK
 
     def _playout(self, board, color):
-        print("playout")
+        #print("playout")
         node = self._root
         if not node._expanded:
             node.expand(board, color)
@@ -141,20 +140,26 @@ class MCTS(object):
         assert board.current_player == color
         leaf_value = self._evaluate_rollout(board, color)
         node.update_recursive(leaf_value)
-        print("backpropagation")
+        #print("backpropagation")
 
     def _evaluate_rollout(self, board, toplay):
-        print("simulation")
+        #print("simulation")
         winner = self.get_result(board)
 
         while winner is None and len(board.get_empty_points()) > 0:
+            
+            if len(board.get_empty_points()) <= 5:
+                winner, _ = board.solve()
+                #print("AB")
+                break
+            
             legal_moves = filtered_moves(board)
             move = random.choice(legal_moves)
             board.play_move_gomoku(move, board.current_player)
             winner = self.get_result(board)
         
-        print("winner: ", winner)
-        if winner == BLACK:
+        #print("winner: ", winner)
+        if winner == BLACK or winner == 'b':
             return 1
         elif winner == 'draw':
             #print("acess draw")
@@ -194,7 +199,7 @@ class MCTS(object):
             ]
 
             moves_ls = sorted(moves_ls, key=lambda i: i[1], reverse=True)
-            print(moves_ls)
+            #print(moves_ls)
             move = moves_ls[0]
         
             return move[0]

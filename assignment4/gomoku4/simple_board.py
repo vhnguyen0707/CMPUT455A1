@@ -421,7 +421,8 @@ class SimpleGoBoard(object):
         return False, None
 
     def solve(self):
-        result, move, drawMove = alphabeta.solve(self)
+        result, move = alphabeta.solve(self)
+        drawMove = None
         if move=="First":
             if result==0:
                 return 'draw',drawMove
