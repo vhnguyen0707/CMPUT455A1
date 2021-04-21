@@ -58,6 +58,15 @@ class TreeNode(object):
         self._expanded = False
         self._move = None
 
+    def winrate(self, max_flag):
+        if self._n_visits == 0:
+            return 0
+        
+        if max_flag:
+            return float(self._black_wins / self._n_visits)
+        else:
+            return float((self._n_visits - self._black_wins) / self._n_visits)
+
     def expand(self, board, color):
         """
         Expands tree by creating new children.
@@ -194,14 +203,23 @@ class MCTS(object):
             signal.alarm(0)
         
         except Exception:
+            max_flag = toplay == BLACK
+
             moves_ls = [
-                (move, node._n_visits) for move, node in self._root._children.items()
+                (move, node._n_visits, node.winrate(max_flag)) for move, node in self._root._children.items()
             ]
 
+            _, max_visit, _ = max(moves_ls, key=lambda i: i[1])
+            max_visit_moves = [move for move in moves_ls if move[1] == max_visit]
+            move = max(max_visit_moves, key=lambda i: i[2])
+            
+            '''
             moves_ls = sorted(moves_ls, key=lambda i: i[1], reverse=True)
-            #print(moves_ls)
-            move = moves_ls[0]
-        
+            print(moves_ls)
+            print(move)
+            #move = moves_ls[0]
+            '''
+            
             return move[0]
 
     def update_with_move(self, last_move):
