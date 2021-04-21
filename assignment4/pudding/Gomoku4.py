@@ -11,12 +11,12 @@ import numpy as np
 
 from mcts import MCTS
 
-class GomokuSimulationPlayer(object):
+class Gomoku_MCTSBased_Player(object):
 
     def __init__(self, board_size=7):
         self.board_size = board_size
         self.exploration = math.sqrt(2)
-        self.name="Gomoku4"
+        self.name = "Gomoku4"
         self.version = 4.0
      
     def get_move(self, board, color_to_play):
@@ -28,7 +28,7 @@ def run():
     start the gtp connection and wait for commands.
     """
     board = SimpleGoBoard(7)
-    con = GtpConnection(GomokuSimulationPlayer(), board)
+    con = GtpConnection(Gomoku_MCTSBased_Player(), board)
     con.start_connection()
 
 if __name__=='__main__':

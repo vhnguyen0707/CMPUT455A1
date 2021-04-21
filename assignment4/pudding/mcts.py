@@ -1,19 +1,16 @@
-import os, sys
 import numpy as np
 
-from board_util import GoBoardUtil, BLACK, WHITE, PASS, EMPTY
-#from gtp_connection import point_to_coord, format_point
+from board_util import GoBoardUtil, BLACK, WHITE, EMPTY
 
 import signal
 import random
+
+TIMELIMIT = 59
 
 def handler(signum, frame):
     raise Exception()
 
 signal.signal(signal.SIGALRM, handler)
-
-#PASS = "pass"
-TIMELIMIT = 60
 
 def filtered_moves(board):
     pattern = board.get_pattern_moves()
@@ -43,9 +40,6 @@ class TreeNode(object):
     """
     A node in the MCTS tree.
     """
-
-    version = 0.22
-    name = "MCTS Player"
 
     def __init__(self, parent):
         """
@@ -131,7 +125,6 @@ class MCTS(object):
         self.toplay = BLACK
 
     def _playout(self, board, color):
-        #print("playout")
         node = self._root
         if not node._expanded:
             node.expand(board, color)
@@ -149,17 +142,14 @@ class MCTS(object):
         assert board.current_player == color
         leaf_value = self._evaluate_rollout(board, color)
         node.update_recursive(leaf_value)
-        #print("backpropagation")
 
     def _evaluate_rollout(self, board, toplay):
-        #print("simulation")
         winner = self.get_result(board)
 
         while winner is None and len(board.get_empty_points()) > 0:
             
             if len(board.get_empty_points()) <= 5:
                 winner, _ = board.solve()
-                #print("AB")
                 break
             
             legal_moves = filtered_moves(board)
@@ -167,11 +157,9 @@ class MCTS(object):
             board.play_move_gomoku(move, board.current_player)
             winner = self.get_result(board)
         
-        #print("winner: ", winner)
         if winner == BLACK or winner == 'b':
             return 1
         elif winner == 'draw':
-            #print("acess draw")
             return 0.5
         else:
             return 0
@@ -190,7 +178,7 @@ class MCTS(object):
         toplay,
         exploration,
     ):  
-        signal.alarm(TIMELIMIT - 1)
+        signal.alarm(TIMELIMIT)
 
         try: 
             if self.toplay != toplay:
@@ -213,23 +201,4 @@ class MCTS(object):
             max_visit_moves = [move for move in moves_ls if move[1] == max_visit]
             move = max(max_visit_moves, key=lambda i: i[2])
             
-            '''
-            moves_ls = sorted(moves_ls, key=lambda i: i[1], reverse=True)
-            print(moves_ls)
-            print(move)
-            #move = moves_ls[0]
-            '''
-            
             return move[0]
-
-    def update_with_move(self, last_move):
-        """
-        Step forward in the tree, keeping everything we already know about the subtree, assuming
-        that get_move() has been called already. Siblings of the new root will be garbage-collected.
-        """
-        if last_move in self._root._children:
-            self._root = self._root._children[last_move]
-        else:
-            self._root = TreeNode(None)
-        self._root._parent = None
-        self.toplay = GoBoardUtil.opponent(self.toplay)
